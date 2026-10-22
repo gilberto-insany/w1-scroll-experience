@@ -147,3 +147,31 @@ html.intro-pending .manifesto,html.intro-pending .marquee,html.intro-pending .so
 @media(max-width:1050px){.case-card{width:170px;top:108px;right:24px}}
 @media(max-width:800px){.case-card{width:145px;top:108px;right:20px;bottom:auto;border-radius:9px}.case-card-visual{border-radius:5px}.case-card-title{font-size:11px}.header.scrolled .contact-pill{font-size:10px;padding:12px 16px}.manifesto{height:100svh;min-height:760px}.solution-content{padding-left:0}.hero-bottom{right:var(--gutter);display:block}}
 @media(max-width:500px){.case-card{width:128px;top:102px;right:18px;bottom:auto}.case-card-title{font-size:10px}.case-card-label{font-size:7px}.case-card-footer>span:last-child{font-size:7px}.header.scrolled .contact-pill{font-size:10px;padding:12px 14px}.contact-pill{font-size:11px}.scroll-cue{font-size:9px}.manifesto{min-height:740px}.solution-content{padding-left:0}}
+/* A grid-aligned horizontal story, and an unobstructed black stage. */
+.manifesto-copy:before{display:none}
+#logo-stage{mask-image:none;-webkit-mask-image:none}
+.case-card-shell{position:absolute;z-index:4;right:var(--gutter);bottom:42px;width:calc((100% - var(--gutter)*2 - var(--column-gap)*11)/12*4 + var(--column-gap)*3);max-width:440px;min-width:300px;border-radius:9px;background:rgba(13,16,15,.58);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.case-card-shell:hover{background:rgba(18,23,21,.68)}
+.case-card{position:static;display:grid;grid-template-columns:98px 1fr;gap:16px;width:100%;padding:8px;background:none;backdrop-filter:none;-webkit-backdrop-filter:none;border-radius:9px;min-height:112px;transition:none}
+.case-card:hover{background:none;transform:none}
+.case-card-visual{width:98px;height:96px;aspect-ratio:auto;border-radius:5px;background:#050907;overflow:hidden}
+.case-card-visual img{width:100%;height:100%;object-fit:cover}
+.case-card-visual.is-object img{object-fit:contain;padding:8px}
+.case-card-copy{padding:6px 8px 7px 0;display:flex;flex-direction:column;justify-content:center;min-width:0}
+.case-card-label{font-size:8px;margin:0 0 8px;letter-spacing:.045em}
+.case-card-title{font-size:15px;line-height:1.12;margin:0;min-height:34px}
+.case-card-footer{font-size:7px;line-height:1.1;padding:0;margin:13px 70px 0 0;display:block;color:#919e96}
+.case-switcher{position:absolute;right:13px;bottom:9px;display:flex;align-items:center;gap:1px}
+.case-dot{display:grid;place-items:center;width:16px;height:20px;padding:0;border:0;background:none}
+.case-dot:before{content:'';width:4px;height:4px;border-radius:50%;background:#53665e;transition:background .3s,transform .3s}
+.case-dot.is-active:before{background:var(--green);transform:scale(1.25)}
+.case-pause{display:grid;place-items:center;width:20px;height:20px;background:none;border:0;font-size:10px;color:#a4b1aa;line-height:1;padding:0;margin-left:3px}
+.case-pause[aria-pressed=true]{color:var(--green)}
+.marquee-track{animation-duration:46s;align-items:center}
+.marquee-track>.marquee-group{display:flex;align-items:center;gap:0;word-spacing:normal}
+.marquee-word{display:block;line-height:1.06}
+.marquee-icon{display:block;flex:none;width:clamp(70px,8.5vw,140px);height:clamp(70px,8.5vw,140px);margin:0 clamp(14px,2.2vw,40px);object-fit:contain}
+@media(max-width:1050px){.case-card-shell{width:calc((100% - var(--gutter)*2 - var(--column-gap)*11)/12*5 + var(--column-gap)*4);max-width:370px}}
+@media(max-width:800px){.case-card-shell{right:var(--gutter);bottom:30px;width:300px;min-width:0}.case-card{grid-template-columns:86px 1fr;gap:13px;min-height:102px}.case-card-visual{width:86px;height:86px}.case-card-title{font-size:14px;min-height:32px}.hero-bottom{bottom:153px}.case-card-copy{padding-top:4px}.case-card-label{font-size:7px}.case-card-footer{font-size:7px;margin-top:10px}.marquee-icon{width:78px;height:78px;margin:0 18px}}
+@media(max-width:500px){.case-card-shell{bottom:28px;width:calc((100% - var(--gutter)*2 - var(--column-gap)*5)/6*5 + var(--column-gap)*4);max-width:320px}.case-card{grid-template-columns:80px 1fr;gap:12px;min-height:96px}.case-card-visual{width:80px;height:80px}.case-card-copy{padding-right:4px}.case-card-title{font-size:13px;min-height:30px}.case-card-label{font-size:7px;margin-bottom:6px}.case-card-footer{font-size:6px;margin-top:9px}.case-switcher{right:10px;bottom:8px}.hero-bottom{bottom:143px}.marquee-icon{width:68px;height:68px;margin:0 15px}}
+html.intro-pending .case-card-shell{opacity:0!important;visibility:hidden!important}

@@ -38,7 +38,7 @@ function createSurfaceTexture() {
 function revealInterface() {
   introRoot.classList.remove('intro-pending');
   if (window.gsap) {
-    window.gsap.fromTo('.header, .hero-top, .hero h1, .hero-bottom, .case-card', { autoAlpha: 0 }, { autoAlpha: 1, duration: .55, stagger: .045, ease: 'power2.out', onComplete: () => window.ScrollTrigger?.refresh() });
+    window.gsap.fromTo('.header, .hero-top, .hero h1, .hero-bottom, .case-card-shell', { autoAlpha: 0 }, { autoAlpha: 1, duration: .55, stagger: .045, ease: 'power2.out', onComplete: () => window.ScrollTrigger?.refresh() });
   }
 }
 
@@ -57,13 +57,13 @@ async function createLogo() {
     const pmrem = new THREE.PMREMGenerator(renderer);
     const room = new RoomEnvironment();
     scene.environment = pmrem.fromScene(room, .04).texture;
-    scene.environmentIntensity = .35;
+    scene.environmentIntensity = .28;
     room.dispose();
     pmrem.dispose();
-    const key = new THREE.DirectionalLight(0xffffff, 1.1);
+    const key = new THREE.DirectionalLight(0xffffff, .85);
     key.position.set(-4, 6, 2);
     scene.add(key);
-    const rim = new THREE.DirectionalLight(0xb6bdb9, .8);
+    const rim = new THREE.DirectionalLight(0xb6bdb9, .6);
     rim.position.set(5, 2, -2);
     scene.add(rim);
     const lower = new THREE.DirectionalLight(0xd4d8d5, .3);
@@ -75,8 +75,8 @@ async function createLogo() {
     greenSoftbox = new THREE.RectAreaLight(0x32ddc9, 22, 2.2, 6);
     scene.add(greenSoftbox);
     const surface = createSurfaceTexture();
-    const faceMaterial = new THREE.MeshPhysicalMaterial({ color: 0x090b0a, metalness: .28, roughness: .48, roughnessMap: surface, bumpMap: surface, bumpScale: .002, clearcoat: .85, clearcoatRoughness: .22, envMapIntensity: .65 });
-    const edgeMaterial = new THREE.MeshPhysicalMaterial({ color: 0x111714, metalness: .55, roughness: .23, clearcoat: 1, clearcoatRoughness: .14, envMapIntensity: 1.2 });
+    const faceMaterial = new THREE.MeshPhysicalMaterial({ color: 0x050706, metalness: .28, roughness: .48, roughnessMap: surface, bumpMap: surface, bumpScale: .002, clearcoat: .85, clearcoatRoughness: .22, envMapIntensity: .5 });
+    const edgeMaterial = new THREE.MeshPhysicalMaterial({ color: 0x0a100d, metalness: .55, roughness: .23, clearcoat: 1, clearcoatRoughness: .14, envMapIntensity: .9 });
     // Keep the broad black face neutral; the bevel and side material carry
     // the colored rim. This avoids a bright green wash over the core.
     faceMaterial.onBeforeCompile = shader => {
@@ -142,7 +142,7 @@ function tick() {
   const reduced = motionQuery.matches;
   state.pointerX += ((reduced ? 0 : pointer.x) - state.pointerX) * .055;
   state.pointerY += ((reduced ? 0 : pointer.y) - state.pointerY) * .055;
-  const fitScale = mobile() ? Math.min(.84, camera.aspect * .9) : Math.min(.88, camera.aspect * .75);
+  const fitScale = mobile() ? Math.min(.9, camera.aspect * .96) : Math.min(.95, camera.aspect * .81);
   const enter = reduced ? 1 : arrival.progress;
   const intro = 1 - enter;
   logo.rotation.set(-.16 + state.turn*.04 + state.pointerY*.08, -.34 - state.turn*.1 + state.pointerX*.12, -.11 + state.turn*.025);
@@ -153,7 +153,7 @@ function tick() {
   greenSoftbox.position.set(logo.position.x + Math.cos(angle) * 5.4, logo.position.y + Math.sin(angle) * 3.8, -.25);
   greenSoftbox.lookAt(logo.position.x, logo.position.y, 0);
   greenSoftbox.intensity = (18 + Math.sin(progress * Math.PI) * 12) * enter * enter;
-  renderer.domElement.style.opacity = String(state.alpha * arrival.reveal);
+  renderer.domElement.style.opacity = String(.78 * state.alpha * arrival.reveal);
   renderer.render(scene, camera);
 }
 
@@ -175,7 +175,7 @@ if (gsap && ScrollTrigger) {
     gsap.set(state, { light: 0, turn: 0, size: 1, x: .85, y: 0, alpha: 1 });
     if (context.conditions.full) {
       gsap.fromTo('.hero h1', { y: 0, autoAlpha: 1 }, { y: -70, autoAlpha: 0, ease: 'none', scrollTrigger: { trigger: '.hero', start: '12% top', end: 'bottom 20%', scrub: .5 } });
-      gsap.fromTo('.hero-top, .hero-bottom, .case-card', { autoAlpha: 1, y: 0 }, { autoAlpha: 0, y: -25, ease: 'none', scrollTrigger: { trigger: '.hero', start: '10% top', end: '70% top', scrub: .4 } });
+      gsap.fromTo('.hero-top, .hero-bottom, .case-card-shell', { autoAlpha: 1, y: 0 }, { autoAlpha: 0, y: -25, ease: 'none', scrollTrigger: { trigger: '.hero', start: '10% top', end: '70% top', scrub: .4 } });
       const journey = gsap.timeline({ defaults: { ease: 'none' }, scrollTrigger: { trigger: '.dark-journey', start: 'top top', end: 'bottom bottom', scrub: .8 } });
       journey.to(state, { light: 1, turn: 1, size: .95, x: 1.1, y: .7, duration: 1 }, 0)
         .to(state, { alpha: .22, duration: .25 }, .75);
@@ -233,8 +233,108 @@ document.querySelectorAll('.solution-list details').forEach(detail => {
 });
 
 const caseDialog = document.getElementById('case-dialog');
-document.querySelector('.case-card').addEventListener('click', () => caseDialog.showModal());
+const caseShell = document.querySelector('.case-card-shell');
+const caseCard = caseShell.querySelector('.case-card');
+const caseImage = caseCard.querySelector('img');
+const caseCopy = caseCard.querySelector('.case-card-copy');
+const caseVisual = caseCard.querySelector('.case-card-visual');
+const caseDots = [...caseShell.querySelectorAll('.case-dot')];
+const casePause = caseShell.querySelector('.case-pause');
+const cases = [
+  {
+    name: 'Clínica Aurora · empresa fictícia', area: 'W1 BUSINESS',
+    title: ['Crescer com um plano.', 'Não por acaso.'],
+    heading: ['Da rotina financeira', 'ao próximo capítulo.'],
+    image: './assets/case-preview.svg', imageAlt: 'Estudo visual de crescimento',
+    steps: [
+      ['Vontade de expandir.', 'Uma clínica em crescimento precisa organizar o caixa antes de dar o próximo passo e abrir uma nova unidade.'],
+      ['Clareza para decidir.', 'Um cenário de planejamento reúne custos, reservas e metas para avaliar o momento e o tamanho da expansão.'],
+      ['Um plano para crescer.', 'A simulação mostra como decisões financeiras podem se conectar aos objetivos do negócio.']
+    ]
+  },
+  {
+    name: 'Família Horizonte · família fictícia', area: 'PLANEJAMENTO PATRIMONIAL',
+    title: ['Um patrimônio.', 'Muitas gerações.'],
+    heading: ['Cuidar do presente.', 'Planejar a continuidade.'],
+    image: './assets/marquee-frame.svg', imageAlt: 'Moldura quadrada tridimensional preta com reflexos verdes',
+    steps: [
+      ['Uma história construída.', 'Uma família quer reunir sua visão de patrimônio e começar a conversar sobre continuidade.'],
+      ['Objetivos compartilhados.', 'O cenário ilustrativo organiza prioridades, compromissos e perguntas para um planejamento familiar.'],
+      ['Um olhar para o futuro.', 'A simulação conecta decisões do presente aos planos das próximas gerações.']
+    ]
+  },
+  {
+    name: 'Estúdio Soma · empresa fictícia', area: 'W1 BUSINESS',
+    title: ['Mais clareza no caixa.', 'Espaço para criar.'],
+    heading: ['Organizar as finanças.', 'Abrir possibilidades.'],
+    image: './assets/marquee-cross.svg', imageAlt: 'Forma tridimensional preta com reflexos verdes',
+    steps: [
+      ['Novos projetos chegando.', 'Um estúdio criativo precisa conciliar prazos de recebimento e despesas recorrentes.'],
+      ['Visibilidade para escolher.', 'O cenário ilustrativo reúne calendário financeiro, prioridades e uma reserva planejada.'],
+      ['Próximos passos conscientes.', 'A simulação demonstra uma forma de avaliar novos projetos com uma visão mais clara do caixa.']
+    ]
+  }
+];
+let activeCase = 0, caseTimer, caseInView = true, caseHovered = false, casePaused = false;
+let caseTransition;
+function setLines(element, lines) {
+  element.replaceChildren(...lines.flatMap((line, index) => index ? [document.createElement('br'), document.createTextNode(line)] : [document.createTextNode(line)]));
+}
+function scheduleCase() {
+  clearTimeout(caseTimer);
+  if (motionQuery.matches || casePaused || caseHovered || !caseInView || document.hidden || caseDialog.open || caseShell.contains(document.activeElement)) return;
+  caseTimer = setTimeout(() => selectCase((activeCase + 1) % cases.length), 6500);
+}
+function selectCase(index) {
+  caseTransition?.kill();
+  activeCase = index;
+  const update = () => {
+    const item = cases[activeCase];
+    caseImage.src = item.image;
+    caseImage.alt = item.imageAlt;
+    caseVisual.classList.toggle('is-object', activeCase !== 0);
+    setLines(caseCard.querySelector('.case-card-title'), item.title);
+    caseDots.forEach((dot, i) => {
+      dot.classList.toggle('is-active', i === activeCase);
+      dot.setAttribute('aria-pressed', String(i === activeCase));
+    });
+  };
+  if (gsap && !motionQuery.matches) {
+    caseTransition = gsap.timeline().to([caseVisual, caseCopy], { opacity: 0, y: -4, duration: .18, ease: 'power1.in' })
+      .call(update).fromTo([caseVisual, caseCopy], { opacity: 0, y: 5 }, { opacity: 1, y: 0, duration: .38, ease: 'power2.out', immediateRender: false });
+  } else update();
+  scheduleCase();
+}
+caseDots.forEach(dot => dot.addEventListener('click', () => selectCase(Number(dot.dataset.case))));
+casePause.addEventListener('click', () => {
+  casePaused = !casePaused;
+  casePause.setAttribute('aria-pressed', String(casePaused));
+  casePause.setAttribute('aria-label', casePaused ? 'Retomar alternância' : 'Pausar alternância');
+  casePause.querySelector('span').textContent = casePaused ? '▷' : 'Ⅱ';
+  scheduleCase();
+});
+caseShell.addEventListener('pointerenter', () => { caseHovered = true; scheduleCase(); });
+caseShell.addEventListener('pointerleave', () => { caseHovered = false; scheduleCase(); });
+caseShell.addEventListener('focusin', scheduleCase);
+caseShell.addEventListener('focusout', () => requestAnimationFrame(scheduleCase));
+document.addEventListener('visibilitychange', scheduleCase);
+motionQuery.addEventListener('change', () => { casePause.hidden = motionQuery.matches; scheduleCase(); });
+casePause.hidden = motionQuery.matches;
+new IntersectionObserver(([entry]) => { caseInView = entry.isIntersecting; scheduleCase(); }, { threshold: .5 }).observe(caseShell);
+caseCard.addEventListener('click', () => {
+  const item = cases[activeCase];
+  caseDialog.querySelector('.eyebrow').textContent = item.area + ' / ESTUDO ILUSTRATIVO';
+  setLines(caseDialog.querySelector('h2'), item.heading);
+  caseDialog.querySelector('.case-intro').textContent = item.name;
+  caseDialog.querySelectorAll('.case-steps>div').forEach((step, index) => {
+    step.querySelector('h3').textContent = item.steps[index][0];
+    step.querySelector('p').textContent = item.steps[index][1];
+  });
+  caseDialog.showModal();
+  scheduleCase();
+});
 document.querySelector('.case-dialog-close').addEventListener('click', () => caseDialog.close());
+caseDialog.addEventListener('close', scheduleCase);
 caseDialog.addEventListener('click', event => {
   const rect = caseDialog.getBoundingClientRect();
   if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) caseDialog.close();
