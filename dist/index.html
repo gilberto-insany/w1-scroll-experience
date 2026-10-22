@@ -8,13 +8,15 @@
   <title>W1 — Seu futuro em movimento</title>
   <link rel="icon" href="./assets/w1.svg" type="image/svg+xml">
   <link rel="preload" href="./assets/fonts/PublicSans-Latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./style.css?v=2">
+  <link rel="stylesheet" href="./layout.css?v=2">
   <script type="importmap">{"imports":{"three":"./assets/vendor/three.module.js"}}</script>
   <script defer src="./assets/vendor/gsap.min.js"></script>
   <script defer src="./assets/vendor/ScrollTrigger.min.js"></script>
-  <script type="module" src="./app.js"></script>
+  <script type="module" src="./app.js?v=2"></script>
 </head>
 <body>
+
   <a class="skip-link" href="#solucoes">Ir para as soluções</a>
   <header class="header">
     <a href="#inicio" class="brand" aria-label="W1 — Início"><img src="./assets/w1.svg" alt="W1" width="72" height="36"><span>FUTURO EM<br>MOVIMENTO.</span></a>
@@ -24,29 +26,30 @@
   <div id="menu" class="menu-overlay" hidden inert>
     <span class="eyebrow">EXPLORE NOVAS POSSIBILIDADES</span>
     <nav aria-label="Menu"><a href="#inicio"><small>00</small> Início <span>↗</span></a><a href="#essencia"><small>01</small> A essência <span>↗</span></a><a href="#solucoes"><small>02</small> Soluções <span>↗</span></a><a href="#contato"><small>03</small> Seu próximo passo <span>↗</span></a></nav>
-    <p>Uma nova perspectiva para o seu futuro.</p>
+    <p>Seu próximo passo começa aqui.</p>
   </div>
   <main>
     <div class="dark-journey" id="inicio">
-      <div class="visual-sticky" aria-hidden="true"><div class="ambient-glow"></div><div id="logo-stage"><img class="logo-fallback" src="./assets/w1.svg" alt=""></div><div class="visual-caption"><i></i><span>UMA NOVA PERSPECTIVA</span><span class="material-label">01 — POTENCIAL</span></div></div>
+      <div class="grid-guides" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      <div class="visual-sticky" aria-hidden="true"><div class="ambient-glow"></div><div id="logo-stage"><img class="logo-fallback" src="./assets/w1-outline.svg" alt=""></div></div>
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-top"><p>Planejamento financeiro.<br>Perspectiva humana.<br>Possibilidades sem limites.</p><span class="eyebrow hero-index">W1 / UM FUTURO POSSÍVEL</span></div>
         <h1 id="hero-title"><span>Seu futuro.</span><span class="second-line">Em movimento<span class="title-period">.</span></span></h1>
+        <button type="button" class="case-card" aria-haspopup="dialog" aria-controls="case-dialog">
+          <span class="case-card-visual"><img src="./assets/case-preview.svg" alt="Estudo visual de crescimento com formas tridimensionais" width="400" height="320"></span>
+          <span class="case-card-copy"><span class="case-card-label">ÚLTIMOS CASES <i aria-hidden="true"></i></span><span class="case-card-title">Crescer com um plano.<br>Não por acaso.</span><span class="case-card-description">Um novo capítulo para quem empreende.</span><span class="case-card-footer"><span>CASE ILUSTRATIVO</span><span aria-hidden="true">↗</span></span></span>
+        </button>
         <div class="hero-bottom"><a class="scroll-cue" href="#essencia"><span class="scroll-line" aria-hidden="true">↓</span><span>GRANDES CONQUISTAS<br>COMEÇAM COM UM PASSO.</span></a><a class="hero-cta" href="https://www.w1.com.br/atendimento" target="_blank" rel="noopener"><span class="arrow-orbit" aria-hidden="true">↗</span><span>O próximo capítulo<br><strong>começa com você.</strong></span></a></div>
       </section>
-      <section class="essence" id="essencia" aria-labelledby="essence-title">
-        <div class="section-meta"><span class="eyebrow"><i></i> 01 / A ESSÊNCIA</span><span class="eyebrow">PESSOAS. PLANOS. POSSIBILIDADES.</span></div>
-        <h2 id="essence-title" class="reveal-words">O futuro não acontece.<br>A gente faz acontecer.</h2>
-        <div class="essence-note"><span class="note-cross" aria-hidden="true">+</span><p>O que move você é o que nos move.<br>Conectamos planejamento, tecnologia e pessoas para transformar objetivos em próximos passos.</p></div>
-      </section>
-      <section class="manifesto" aria-labelledby="manifesto-title">
-        <div class="section-meta"><span class="eyebrow"><i></i> POTENCIAL QUE SE TRANSFORMA</span><span class="eyebrow">02 — EM MOVIMENTO</span></div>
+      <section class="manifesto" id="essencia" aria-labelledby="manifesto-title">
+        <div class="section-meta"><span class="eyebrow"><i></i> 01 / A W1</span><span class="eyebrow">PLANEJAMENTO QUE ACOMPANHA VOCÊ.</span></div>
         <div class="manifesto-copy"><h2 id="manifesto-title">Sua vida é única.<br>Seu planejamento<br><em>também precisa ser.</em></h2><div class="manifesto-aside"><span class="mini-line"></span><p>Somos a W1. Um ecossistema que une conhecimento financeiro, tecnologia e um olhar humano para acompanhar as suas ambições.</p><a class="text-link" href="#solucoes">Conheça nossas soluções <span>↗</span></a></div></div>
         <div class="manifesto-bottom"><span class="eyebrow">DO PRIMEIRO PLANO AO SEU LEGADO.</span><span class="eyebrow">SEMPRE EM FRENTE. ↘</span></div>
       </section>
       <div class="marquee" aria-label="Planejar, conquistar, transformar, evoluir"><div class="marquee-track" aria-hidden="true"><span>PLANEJAR <b>↗</b> CONQUISTAR <b>✳</b> TRANSFORMAR <b>↗</b> EVOLUIR <b>✳</b>&nbsp;</span><span>PLANEJAR <b>↗</b> CONQUISTAR <b>✳</b> TRANSFORMAR <b>↗</b> EVOLUIR <b>✳</b>&nbsp;</span></div></div>
     </div>
     <section class="solutions" id="solucoes" aria-labelledby="solutions-title">
+      <div class="grid-guides" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
       <div class="section-meta"><span class="eyebrow"><i></i> 02 / POSSIBILIDADES REAIS</span><span class="eyebrow">UM ECOSSISTEMA. O SEU MOMENTO.</span></div>
       <div class="solutions-intro"><h2 id="solutions-title">Muito além<br>dos <span>números.</span></h2><p>Uma visão completa das suas finanças.<br>Um caminho que faz sentido para você.</p></div>
       <div class="solution-list">
@@ -58,6 +61,15 @@
     </section>
     <footer id="contato"><div class="footer-top"><span class="eyebrow"><i></i> O SEU PRÓXIMO PASSO</span><span class="eyebrow">VAMOS CONSTRUIR JUNTOS.</span></div><a class="footer-cta" href="https://www.w1.com.br/atendimento" target="_blank" rel="noopener">O futuro<br>começa agora.<span aria-hidden="true">↗</span></a><div class="footer-bottom"><img src="./assets/w1.svg" alt="W1" width="64" height="32"><span>© 2026 W1 · Estudo de experiência digital</span><a href="#inicio">Voltar ao início ↑</a></div></footer>
   </main>
+  <dialog id="case-dialog" class="case-dialog" aria-labelledby="case-title">
+    <button type="button" class="case-dialog-close" aria-label="Fechar case">×</button>
+    <span class="eyebrow">W1 BUSINESS / ESTUDO ILUSTRATIVO</span>
+    <h2 id="case-title">Da rotina financeira<br>ao próximo capítulo.</h2>
+    <p class="case-intro">Clínica Aurora · empresa fictícia</p>
+    <div class="case-steps"><div><span>01 / O MOMENTO</span><h3>Vontade de expandir.</h3><p>Uma clínica em crescimento precisa organizar o caixa antes de dar o próximo passo e abrir uma nova unidade.</p></div><div><span>02 / O CAMINHO</span><h3>Clareza para decidir.</h3><p>Um cenário de planejamento reúne custos, reservas e metas para avaliar o momento e o tamanho da expansão.</p></div><div><span>03 / A POSSIBILIDADE</span><h3>Um plano para crescer.</h3><p>A simulação mostra como decisões financeiras podem se conectar aos objetivos do negócio.</p></div></div>
+    <p class="case-disclaimer">Case fictício criado para demonstrar esta proposta de página. Não representa um cliente, serviço contratado ou resultado real da W1.</p>
+    <a class="contact-pill" href="https://www.w1.com.br/atendimento" target="_blank" rel="noopener">Vamos conversar <span>↗</span></a>
+  </dialog>
   <div class="page-progress" aria-hidden="true"><span></span></div>
 </body>
 </html>

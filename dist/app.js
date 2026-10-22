@@ -1,14 +1,17 @@
 import * as THREE from 'three';
 import { SVGLoader } from './assets/vendor/SVGLoader.js';
 import { RoomEnvironment } from './assets/vendor/RoomEnvironment.js';
+import { buildFragmentedLogo, buildStroke } from './fragments.js';
 
-const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 const mobile = () => window.innerWidth <= 800;
-const state = { fill: 0, turn: 0, size: 1, x: 0, y: 0, pointerX: 0, pointerY: 0 };
-const fillUniform = { value: 0 };
-let renderer, scene, camera, logo, animationFrame, environmentMap;
+const state = { body: 0, explode: 0, turn: 0, size: 1, x: 1, y: 0, alpha: 1, pointerX: 0, pointerY: 0 };
+const pointer = { x: 0, y: 0 };
+let renderer, scene, camera, logo, animationFrame, bodyMaterial, strokeMaterial, edgeMaterial, dustMaterial;
+let pieces = [];
 let isVisible = true;
 const stage = document.getElementById('logo-stage');
+const clamp = THREE.MathUtils.clamp;
 
 async function createLogo() {
   try {
@@ -17,57 +20,53 @@ async function createLogo() {
     renderer.setClearColor(0x080909, 0);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = .95;
+    renderer.toneMappingExposure = 1.05;
     stage.appendChild(renderer.domElement);
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(34, 1, .1, 100);
     camera.position.set(0, 0, 14);
     const pmrem = new THREE.PMREMGenerator(renderer);
     const room = new RoomEnvironment();
-    environmentMap = pmrem.fromScene(room, .04);
-    scene.environment = environmentMap.texture;
-    scene.environmentIntensity = .7;
+    scene.environment = pmrem.fromScene(room, .04).texture;
+    scene.environmentIntensity = .8;
     room.dispose();
     pmrem.dispose();
-    const key = new THREE.DirectionalLight(0xffffff, 1.8);
+    const key = new THREE.DirectionalLight(0xf4f6f6, 2.1);
     key.position.set(-4, 6, 5);
     scene.add(key);
-    const rim = new THREE.DirectionalLight(0x91b9af, 1.4);
+    const rim = new THREE.DirectionalLight(0xc2ccce, 2.2);
     rim.position.set(5, 2, -2);
     scene.add(rim);
-    const lower = new THREE.DirectionalLight(0xc9ddd4, .65);
+    const lower = new THREE.DirectionalLight(0xe2e6e3, 1.1);
     lower.position.set(1, -5, 3);
     scene.add(lower);
-    const material = new THREE.MeshPhysicalMaterial({ color: 0x1b211e, metalness: .96, roughness: .24, clearcoat: 1, clearcoatRoughness: .19, envMapIntensity: 1.9 });
-    material.onBeforeCompile = shader => {
-      shader.uniforms.uFill = fillUniform;
-      shader.vertexShader = 'varying float vLogoY;\n' + shader.vertexShader;
-      shader.vertexShader = shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\nvLogoY = position.y;');
-      shader.fragmentShader = 'uniform float uFill;\nvarying float vLogoY;\n' + shader.fragmentShader;
-      shader.fragmentShader = shader.fragmentShader.replace('#include <color_fragment>', `#include <color_fragment>
-        float w1Fill = smoothstep(-0.75, 0.75, vLogoY - (20.0 - uFill * 40.0));
-        diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.008, 0.36, 0.245), w1Fill);`);
-      shader.fragmentShader = shader.fragmentShader.replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\nroughnessFactor = mix(roughnessFactor, 0.27, w1Fill);');
-      shader.fragmentShader = shader.fragmentShader.replace('#include <metalnessmap_fragment>', '#include <metalnessmap_fragment>\nmetalnessFactor = mix(metalnessFactor, 0.5, w1Fill);');
-      shader.fragmentShader = shader.fragmentShader.replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\ntotalEmissiveRadiance += vec3(0.006, 0.09, 0.065) * w1Fill;');
-    };
+    const greenBounce = new THREE.DirectionalLight(0x49c996, .42);
+    greenBounce.position.set(-4, -1, 4);
+    scene.add(greenBounce);
+    bodyMaterial = new THREE.MeshPhysicalMaterial({ color: 0x101315, metalness: .88, roughness: .28, clearcoat: .8, clearcoatRoughness: .2, envMapIntensity: 1.7, transparent: true, opacity: 0, depthWrite: false });
+    strokeMaterial = new THREE.MeshPhysicalMaterial({ color: 0x9ba2a1, metalness: .9, roughness: .24, envMapIntensity: 2, transparent: true, opacity: .9 });
+    edgeMaterial = new THREE.LineBasicMaterial({ color: 0x83908f, transparent: true, opacity: 0, depthWrite: false });
     const response = await fetch('./assets/w1.svg');
     if (!response.ok) throw new Error('Logo indisponível');
     const svg = new SVGLoader().parse(await response.text());
+    const shapes = svg.paths.filter(path => path.userData?.node?.nodeName === 'path').flatMap(path => SVGLoader.createShapes(path));
     logo = new THREE.Group();
-    for (const path of svg.paths) {
-      if (path.userData?.node?.nodeName !== 'path') continue;
-      for (const shape of SVGLoader.createShapes(path)) {
-        const geometry = new THREE.ExtrudeGeometry(shape, { depth: 6, steps: 1, bevelEnabled: true, bevelThickness: .48, bevelSize: .42, bevelSegments: 5, curveSegments: 24 });
-        geometry.translate(-36, -18, -3);
-        const mesh = new THREE.Mesh(geometry, material);
-        mesh.scale.set(.1, -.1, .1);
-        logo.add(mesh);
-      }
+    logo.add(buildStroke(shapes, strokeMaterial));
+    const fragmented = buildFragmentedLogo(shapes, bodyMaterial, edgeMaterial);
+    pieces = fragmented.pieces;
+    logo.add(fragmented.root);
+    const dustPositions = new Float32Array(120 * 3);
+    for (let i = 0; i < 120; i++) {
+      dustPositions[i*3] = Math.sin(i*127.1) * 5.4;
+      dustPositions[i*3+1] = Math.sin(i*311.7) * 3.2;
+      dustPositions[i*3+2] = Math.sin(i*71.3) * 1.8;
     }
+    const dustGeometry = new THREE.BufferGeometry();
+    dustGeometry.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
+    dustMaterial = new THREE.PointsMaterial({ color: 0x9ca9a7, size: .014, transparent: true, opacity: 0, depthWrite: false });
+    logo.add(new THREE.Points(dustGeometry, dustMaterial));
     scene.add(logo);
     resize();
-    renderer.render(scene, camera);
     document.body.classList.add('webgl-ready');
     renderer.domElement.addEventListener('webglcontextlost', event => {
       event.preventDefault();
@@ -94,25 +93,34 @@ function resize() {
 function tick() {
   animationFrame = requestAnimationFrame(tick);
   if (!isVisible || document.hidden || !logo) return;
-  const aspect = camera.aspect;
-  const fitScale = mobile() ? Math.min(1.2, aspect * 1.08) : Math.min(1.53, aspect * 1.55);
-  const targetX = reduceMotion ? 0 : state.pointerX * .055;
-  const targetY = reduceMotion ? 0 : state.pointerY * .04;
-  logo.rotation.x = -.16 + state.turn * .2 + targetY;
-  logo.rotation.y = -.34 + state.turn * .62 + targetX;
-  logo.rotation.z = -.11 + state.turn * .17;
-  logo.position.set(mobile() ? 0 : state.x, .35 + state.y, 0);
+  const reduced = motionQuery.matches;
+  state.pointerX += ((reduced ? 0 : pointer.x) - state.pointerX) * .055;
+  state.pointerY += ((reduced ? 0 : pointer.y) - state.pointerY) * .055;
+  const fitScale = mobile() ? Math.min(.8, camera.aspect * .9) : Math.min(.8, camera.aspect * .7);
+  logo.rotation.set(-.15 + state.turn*.2 + state.pointerY*.1, -.28 + state.turn*.55 + state.pointerX*.13, -.085 + state.turn*.14);
+  logo.position.set(mobile() ? 0 : state.x, .45 + state.y, 0);
   logo.scale.setScalar(fitScale * state.size);
-  fillUniform.value = state.fill;
-  renderer.domElement.style.opacity = String(1 - state.fill * .48);
+  const explode = reduced ? 0 : state.explode;
+  for (const piece of pieces) {
+    const progress = clamp((explode - piece.delay) / (1 - piece.delay), 0, 1);
+    const eased = progress * progress * (3 - 2*progress);
+    piece.group.position.copy(piece.center).addScaledVector(piece.drift, eased);
+    piece.group.rotation.set(piece.rotation.x*eased, piece.rotation.y*eased, piece.rotation.z*eased);
+  }
+  bodyMaterial.opacity = clamp(state.body * 1.35, 0, 1) * state.alpha;
+  bodyMaterial.depthWrite = bodyMaterial.opacity > .98;
+  strokeMaterial.opacity = (.88 - state.body*.2) * (1 - explode) * state.alpha;
+  edgeMaterial.opacity = .32 * explode * state.alpha;
+  dustMaterial.opacity = .4 * explode * state.alpha;
   renderer.render(scene, camera);
 }
 
 window.addEventListener('resize', resize, { passive: true });
 window.addEventListener('pointermove', event => {
-  state.pointerX += ((event.clientX / innerWidth - .5) * 2 - state.pointerX) * .16;
-  state.pointerY += ((event.clientY / innerHeight - .5) * 2 - state.pointerY) * .16;
+  pointer.x = (event.clientX / innerWidth - .5) * 2;
+  pointer.y = (event.clientY / innerHeight - .5) * 2;
 }, { passive: true });
+window.addEventListener('pointerout', event => { if (!event.relatedTarget) pointer.x = pointer.y = 0; });
 new IntersectionObserver(entries => { isVisible = entries[0].isIntersecting; }, { rootMargin: '100px' }).observe(document.querySelector('.dark-journey'));
 createLogo();
 
@@ -122,33 +130,26 @@ if (gsap && ScrollTrigger) {
   gsap.registerPlugin(ScrollTrigger);
   const media = gsap.matchMedia();
   media.add({ full: '(prefers-reduced-motion: no-preference)', reduced: '(prefers-reduced-motion: reduce)' }, context => {
+    gsap.set(state, { body: 0, explode: 0, turn: 0, size: 1, x: 1, y: 0, alpha: 1 });
     if (context.conditions.full) {
-      const entrance = gsap.timeline({ defaults: { ease: 'power3.out' } });
-      entrance.from('.hero h1 > span', { yPercent: 30, autoAlpha: 0, duration: 1.2, stagger: .12 }, .12);
-      gsap.fromTo('.hero h1', { y: 0, autoAlpha: 1 }, { y: -110, autoAlpha: 0, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom 30%', scrub: .7 } });
-      gsap.fromTo('.hero-top, .hero-bottom', { autoAlpha: 1, y: 0 }, { autoAlpha: 0, y: -40, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: '65% top', scrub: .5 } });
-      gsap.to(state, { turn: 1, size: 1.12, x: mobile() ? 0 : 1.7, y: .5, ease: 'none', scrollTrigger: { trigger: '.dark-journey', start: 'top top', end: 'bottom bottom', scrub: 1 } });
-      gsap.to(state, { fill: 1, ease: 'none', scrollTrigger: { trigger: '.essence', start: '20% 70%', end: 'bottom 45%', scrub: 1 } });
-      const heading = document.querySelector('.reveal-words');
-      if (!heading.querySelector('.word')) heading.innerHTML = heading.innerHTML.split(/(<br\s*\/?\s*>)/i).map(part => /^<br/i.test(part) ? part : part.trim().split(/\s+/).map(word => `<span class="word">${word}</span>`).join(' ')).join('');
-      gsap.from('.reveal-words .word', { opacity: .12, stagger: .12, ease: 'none', scrollTrigger: { trigger: heading, start: 'top 83%', end: 'bottom 42%', scrub: .6 } });
-      gsap.from('.essence-note', { autoAlpha: 0, y: 25, scrollTrigger: { trigger: '.essence-note', start: 'top 90%', end: 'top 70%', scrub: .5 } });
-      gsap.from('.manifesto-copy', { autoAlpha: 0, y: 45, ease: 'none', scrollTrigger: { trigger: '.manifesto-copy', start: 'top 95%', end: 'top 65%', scrub: .6 } });
-    } else {
-      ScrollTrigger.create({ trigger: '.essence', start: 'top center', end: 'bottom top', onUpdate: self => { state.fill = self.progress; } });
+      gsap.from('.hero h1 > span', { yPercent: 20, autoAlpha: 0, duration: 1.1, stagger: .1, ease: 'power3.out' });
+      gsap.fromTo('.hero h1', { y: 0, autoAlpha: 1 }, { y: -70, autoAlpha: 0, ease: 'none', scrollTrigger: { trigger: '.hero', start: '12% top', end: 'bottom 20%', scrub: .5 } });
+      gsap.fromTo('.hero-top, .hero-bottom, .case-card', { autoAlpha: 1, y: 0 }, { autoAlpha: 0, y: -25, ease: 'none', scrollTrigger: { trigger: '.hero', start: '10% top', end: '70% top', scrub: .4 } });
+      const journey = gsap.timeline({ defaults: { ease: 'none' }, scrollTrigger: { trigger: '.dark-journey', start: 'top top', end: 'bottom bottom', scrub: .8 } });
+      journey.to(state, { body: .94, size: 1.18, x: 1.7, y: .25, turn: .4, duration: .5 }, .03)
+        .to(state, { explode: 1, size: 1.25, x: .6, y: 1.35, turn: 1, duration: .55 }, .4)
+        .to(state, { alpha: .12, duration: .25 }, .78);
+      gsap.from('.manifesto-copy', { autoAlpha: 0, y: 30, ease: 'none', scrollTrigger: { trigger: '.manifesto-copy', start: 'top 93%', end: 'top 72%', scrub: .4 } });
     }
   });
   ScrollTrigger.create({ trigger: 'body', start: 'top top', end: 'bottom bottom', onUpdate: self => { document.querySelector('.page-progress span').style.transform = `scaleX(${self.progress})`; } });
   document.fonts.ready.then(() => ScrollTrigger.refresh());
 }
-
 const header = document.querySelector('.header');
 const solutions = document.querySelector('.solutions');
 function updateHeader() {
   header.classList.toggle('scrolled', window.scrollY > 40);
   header.classList.toggle('light', solutions.getBoundingClientRect().top < 75);
-  const colored = window.scrollY > window.innerHeight * 1.7;
-  document.querySelector('.material-label').textContent = colored ? '02 — EM MOVIMENTO' : '01 — POTENCIAL';
 }
 window.addEventListener('scroll', updateHeader, { passive: true });
 updateHeader();
@@ -190,4 +191,12 @@ document.querySelectorAll('.solution-list details').forEach(detail => {
     if (detail.open) document.querySelectorAll('.solution-list details').forEach(other => { if (other !== detail) other.open = false; });
     ScrollTrigger?.refresh();
   });
+});
+
+const caseDialog = document.getElementById('case-dialog');
+document.querySelector('.case-card').addEventListener('click', () => caseDialog.showModal());
+document.querySelector('.case-dialog-close').addEventListener('click', () => caseDialog.close());
+caseDialog.addEventListener('click', event => {
+  const rect = caseDialog.getBoundingClientRect();
+  if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) caseDialog.close();
 });

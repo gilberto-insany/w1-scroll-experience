@@ -1,25 +1,47 @@
 # W1 — Seu futuro em movimento
 
-Estudo navegável da abertura e da narrativa de scroll, inspirado no ritmo editorial de landonorris.com e no posicionamento de w1.com.br. O SVG fornecido é a fonte do logo 3D.
+Proposta navegável de uma experiência W1 com grid editorial, contorno 3D e fragmentação vinculada ao scroll.
 
-## Abrir localmente
+[Abrir a proposta](https://w1-future-in-motion.insany-team-1573.chatgpt.site)
 
-`python3 -m http.server 4184 --directory dist`
+## Rodar localmente
 
-Acesse http://localhost:4184. Não é necessário instalar dependências nem executar build. Bibliotecas e fontes são servidas localmente.
+```sh
+python3 -m http.server 4184 --directory dist
+```
 
-## Interação
+Acesse http://localhost:4184. Não há instalação de dependências nem build. Fontes, scripts e assets são servidos localmente.
 
-- Hero de uma altura de viewport, com logo preto extrudado e reflexos de estúdio, atrás do H1.
-- O logo permanece no viewport ao longo da seção escura, aumenta, gira discretamente e recebe a cor da W1 de baixo para cima.
-- Texto de apresentação revelado por palavras, seguido do manifesto, marquee e transição para a área clara de soluções.
-- Menu, navegação interna, acordeões e links para o atendimento oficial funcionais.
-- Layout adaptado para celular, tratamento de movimento reduzido e fallback SVG quando WebGL está indisponível.
+## Interação da revisão 02
 
-## Implementação
+- Hero de uma altura de viewport com logo menor, inicialmente formado por contornos com profundidade e reação suave ao mouse.
+- No scroll, o objeto ganha corpo de metal preto, cresce discretamente e se separa em peças volumétricas independentes. A animação pode ser revertida ao subir a página.
+- Passagem direta da abertura ao manifesto, sem a antiga seção intermediária.
+- Grid de 12 colunas com linhas finas, adaptado para seis no celular. Textos de apoio têm uma área de leitura preservada.
+- Fundo granulado, iluminação verde discreta e verde nos acentos da interface.
+- Header compacto após o scroll: menu à esquerda, logo central e contato à direita.
+- Card flutuante de cases com exemplo explicitamente fictício, aberto em um diálogo acessível.
+- Marquee sem linha superior, seguido da área clara de soluções.
+- Navegação interna, acordeões, links oficiais, tratamento de movimento reduzido e fallback vetorial.
 
-Three.js 0.180: extrusão vetorial com bevel, material físico, ambiente de reflexos e shader de preenchimento. GSAP + ScrollTrigger: sincronização com scroll nativo. CSS: tipografia, transições e marquee.
+## Arquivos principais
 
-`dist/app.js` contém o volume, reflexos, orientação e faixa de preenchimento. `dist/style.css` define a direção de arte e os layouts.
+- `dist/app.js`: iluminação, mouse, animações e navegação.
+- `dist/fragments.js`: contorno com espessura e recorte geométrico das peças do SVG original.
+- `dist/layout.css`: grid, direção de arte, header e responsividade da revisão.
+- `dist/style.css`: estilos base, soluções e rodapé.
+- `dist/index.html`: conteúdo e marcação.
 
-A seção de soluções é um estudo inicial. A proposta concentra o detalhamento na abertura e nas interações solicitadas. Textos adaptados do site oficial; não foram adicionadas métricas ou depoimentos.
+Three.js 0.180, GSAP 3.13 e ScrollTrigger são incluídos em `dist/assets/vendor`. Public Sans é distribuída com sua licença em `dist/assets/fonts`.
+
+## Validar geometria
+
+```sh
+node --check dist/app.js
+node --check dist/fragments.js
+node --no-warnings --experimental-loader ./checks/three-loader.mjs checks/geometry.mjs
+```
+
+A verificação garante volume preservado no recorte de contornos convexos e côncavos, normais voltadas para fora e profundidade real no contorno.
+
+A proposta usa o posicionamento de w1.com.br e referências visuais de Lando Norris, Trionn, Onoera e Nudot. O case da Clínica Aurora é uma simulação autorizada para a apresentação; não é um cliente ou resultado real. A seção de soluções continua como estudo inicial.
