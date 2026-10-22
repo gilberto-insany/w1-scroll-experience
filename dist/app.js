@@ -142,7 +142,7 @@ function tick() {
   const reduced = motionQuery.matches;
   state.pointerX += ((reduced ? 0 : pointer.x) - state.pointerX) * .055;
   state.pointerY += ((reduced ? 0 : pointer.y) - state.pointerY) * .055;
-  const fitScale = mobile() ? Math.min(.9, camera.aspect * .96) : Math.min(.95, camera.aspect * .81);
+  const fitScale = mobile() ? Math.min(1, camera.aspect * 1.06) : Math.min(1.065, camera.aspect * .907);
   const enter = reduced ? 1 : arrival.progress;
   const intro = 1 - enter;
   logo.rotation.set(-.16 + state.turn*.04 + state.pointerY*.08, -.34 - state.turn*.1 + state.pointerX*.12, -.11 + state.turn*.025);

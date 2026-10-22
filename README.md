@@ -12,13 +12,13 @@ python3 -m http.server 4184 --directory dist
 
 Acesse http://localhost:4184. Não há instalação de dependências nem build. Fontes, scripts e assets são locais.
 
-## Revisão 05
+## Revisão 06
 
 - A abertura mostra primeiro apenas o logo sobre preto. Ele diminui até a posição final e, depois, textos e navegação entram suavemente, sem contador ou indicador de progresso.
 - O objeto tem faces pretas com microtextura discreta e acabamento de plástico metalizado; os bevels e as laterais recebem o destaque da luz.
 - A iluminação usa a mesma cor da interface (`#32ddc9`) e percorre o perímetro no scroll. O miolo permanece predominantemente preto.
 - Fundo preto puro, sem granulação nem iluminação de fundo. O degradê escuro que cobria o logo atrás do manifesto foi removido.
-- W ligeiramente maior, com faces mais escuras e transparência para se integrar ao fundo.
+- W central ampliado em aproximadamente 12% na composição desktop, com faces mais escuras e transparência para se integrar ao fundo.
 - Marquee com separadores geométricos em volume: moldura quadrada, cruz, prisma e cubo. Faces pretas e arestas com reflexos verdes.
 - Tipografia editorial com entrelinhas mais fechadas, parágrafos de apoio maiores e compactos, medidas controladas e alguns apoios em caixa alta.
 - Passagem direta da abertura para o manifesto, seguida do marquee sem divisória superior.
