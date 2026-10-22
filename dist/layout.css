@@ -110,3 +110,40 @@ body:after{background-image:url('./assets/grain.svg');background-size:128px 128p
 @media(max-width:800px){.case-card{width:145px;right:20px;bottom:20px}.hero-bottom{display:flex;flex-direction:column;align-items:flex-start;right:185px;bottom:30px;gap:18px}.hero-cta{align-self:flex-start;justify-self:start}.header.scrolled{width:min(500px,calc(100% - 28px));top:12px;padding:8px 10px;gap:14px}.header.scrolled .brand{grid-column:2}.header.scrolled .menu-button{grid-column:1}.header.scrolled .contact-pill{grid-column:3;font-size:9px;padding:11px 13px;gap:14px}.hero-top p{padding-left:12px}.hero-index:after{width:38px}}
 @media(max-width:500px){.case-card{width:128px;right:18px;bottom:18px}.hero-bottom{right:165px;bottom:28px;gap:18px}.hero-cta{font-size:8px}.header.scrolled .brand img{width:36px}.header.scrolled .contact-pill{padding:11px 12px;font-size:9px;gap:12px}.section-meta>.eyebrow:first-child{padding-top:12px}.case-card-title{font-size:10px}}
 .ambient-glow{background:radial-gradient(ellipse at 0% 0%,#8bc99d25,transparent 47%),radial-gradient(ellipse at 72% 42%,#31745114,transparent 50%),radial-gradient(ellipse at 45% 20%,#b6c3b40b,transparent 57%),linear-gradient(130deg,#0d1210,#080c0a 70%)}
+/* Black stage and a logo-first arrival. */
+:root{--black:#000}
+body{background:#000}body:after{display:none}.ambient-glow{background:#000}
+.header.scrolled{background:rgba(0,0,0,.84)}
+.manifesto-copy:before{background:linear-gradient(180deg,transparent,#000 24%,#000 76%,transparent)}
+.case-dialog{background:#080a09}
+html.intro-pending{overflow:hidden}
+html.intro-pending .header,html.intro-pending .hero-top,html.intro-pending .hero h1,html.intro-pending .hero-bottom,html.intro-pending .case-card{opacity:0!important;visibility:hidden!important}
+html.intro-pending .logo-fallback{opacity:0}
+.contact-pill:hover{background:#75e7da}
+html.intro-pending .manifesto,html.intro-pending .marquee,html.intro-pending .solutions,html.intro-pending footer{visibility:hidden!important}
+/* Quiet UI: translucent surfaces, short labels and functional controls. */
+.contact-pill{border-radius:6px;gap:0;text-transform:none;font-size:12px;line-height:1}
+.menu-button{border:0;border-radius:6px}
+.header.scrolled{border:0;border-radius:10px;background:rgba(10,12,11,.56);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);box-shadow:0 8px 28px #0002}
+.header.scrolled.light{border:0;background:rgba(240,240,233,.62)}
+.header.scrolled .contact-pill{border-radius:5px;gap:0;font-size:11px;padding:12px 18px}
+.header.scrolled .menu-button{border:0;border-radius:5px}
+.header.scrolled.menu-open{border:0}
+.case-card{top:112px;right:24px;bottom:auto;width:190px;border:0;border-radius:10px;padding:9px;background:rgba(13,16,15,.58);color:var(--paper);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:none}
+.case-card:hover{box-shadow:none;transform:translateY(-3px);background:rgba(18,23,21,.68)}
+.case-card-visual{border-radius:6px}.case-card-visual:before{display:none}
+.case-card-label{color:#a9b5ae;margin-bottom:10px;letter-spacing:.045em}
+.case-card-title{font-size:13px;color:var(--paper)}
+.case-card-footer{border:0;margin-top:12px;padding-top:0;color:#919e96}
+.case-card-footer>span:last-child{font-size:8px;line-height:1.15}
+.hero-top p{border:0;padding-left:0}.hero-bottom{right:var(--gutter)}
+.scroll-cue{font-family:inherit;font-size:10px;letter-spacing:.02em;text-transform:uppercase}
+.manifesto{height:100svh;min-height:720px;grid-template-rows:1fr;row-gap:0;padding-top:10svh;padding-bottom:10svh}
+.manifesto-aside{padding-top:20px}.manifesto-aside p{margin-top:0}
+.solutions-intro{margin:25px 0 55px}
+.solution-content{padding-left:0}summary{gap:0}.solution-plus{margin-left:auto}
+.marquee-track>span{word-spacing:.25em}
+.text-link{border:0;padding-bottom:0}
+@media(max-width:1050px){.case-card{width:170px;top:108px;right:24px}}
+@media(max-width:800px){.case-card{width:145px;top:108px;right:20px;bottom:auto;border-radius:9px}.case-card-visual{border-radius:5px}.case-card-title{font-size:11px}.header.scrolled .contact-pill{font-size:10px;padding:12px 16px}.manifesto{height:100svh;min-height:760px}.solution-content{padding-left:0}.hero-bottom{right:var(--gutter);display:block}}
+@media(max-width:500px){.case-card{width:128px;top:102px;right:18px;bottom:auto}.case-card-title{font-size:10px}.case-card-label{font-size:7px}.case-card-footer>span:last-child{font-size:7px}.header.scrolled .contact-pill{font-size:10px;padding:12px 14px}.contact-pill{font-size:11px}.scroll-cue{font-size:9px}.manifesto{min-height:740px}.solution-content{padding-left:0}}

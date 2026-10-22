@@ -1,0 +1,22 @@
+/* Compact editorial typesetting, with a readable measure for each scale. */
+:root{--display-leading:.96;--copy-leading:1.2}
+.hero h1{line-height:var(--display-leading);letter-spacing:-.07em}
+.manifesto h2{line-height:.99;letter-spacing:-.055em}
+.solutions h2,.footer-cta{line-height:.96}
+.hero-top p{font-size:11px;line-height:1.18;letter-spacing:.01em;text-transform:uppercase;text-wrap:balance}
+.brand span{line-height:1.15}.eyebrow{line-height:1.15;letter-spacing:.065em}
+.hero-cta,.scroll-cue{line-height:1.2}
+.manifesto-aside p{font-size:clamp(18px,1.5vw,22px);line-height:1.16;letter-spacing:-.035em;font-weight:400;max-width:29ch;text-wrap:pretty;margin-bottom:20px}
+.manifesto-aside .mini-line{margin-bottom:16px}
+.text-link{font-size:10px;line-height:1.15;letter-spacing:.035em;text-transform:uppercase;padding-bottom:9px}
+.solutions-intro>p{font-size:18px;line-height:1.2;letter-spacing:-.025em;max-width:29ch;text-wrap:pretty}
+summary h3{line-height:1.06;letter-spacing:-.04em}
+.solution-content p{font-size:14px;line-height:1.28;letter-spacing:-.015em;max-width:48ch;text-wrap:pretty}
+.solution-content a{font-size:10px;line-height:1.15;text-transform:uppercase;letter-spacing:.025em}
+.case-card-title{line-height:1.15;letter-spacing:-.025em}.case-card-description{line-height:1.23}.case-card-label,.case-card-footer{line-height:1.1}
+.case-dialog h2{line-height:.99;letter-spacing:-.05em}.case-intro{font-size:11px;line-height:1.15;letter-spacing:.03em;text-transform:uppercase}
+.case-steps h3{line-height:1.08;margin:14px 0 10px}.case-steps p{font-size:14px;line-height:1.25;letter-spacing:-.015em;text-wrap:pretty}
+.case-disclaimer{line-height:1.3}
+@media(max-width:1050px){.manifesto-aside p{font-size:18px}.solutions-intro>p{font-size:16px}}
+@media(max-width:800px){.hero h1{line-height:.98}.hero-top p{font-size:10px;line-height:1.17}.manifesto h2{line-height:1.01}.manifesto-aside p{font-size:19px;line-height:1.18;max-width:28ch}.solutions-intro>p{font-size:16px;line-height:1.22}.solution-content p{font-size:14px;line-height:1.28}}
+@media(max-width:500px){.hero h1{line-height:.98}.hero-top p{font-size:9px;line-height:1.18}.manifesto h2{line-height:1.02}.manifesto-aside p{font-size:18px;line-height:1.2}.solutions h2{line-height:.97}.case-card-title{line-height:1.15}.case-steps p{line-height:1.28}}

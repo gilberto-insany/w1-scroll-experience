@@ -7,10 +7,40 @@ const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 const mobile = () => window.innerWidth <= 800;
 const state = { light: 0, turn: 0, size: 1, x: .85, y: 0, alpha: 1, pointerX: 0, pointerY: 0 };
 const pointer = { x: 0, y: 0 };
-const arrival = { progress: motionQuery.matches ? 1 : 0 };
+const introRoot = document.documentElement;
+if (motionQuery.matches) introRoot.classList.remove('intro-pending');
+const startsWithLogo = introRoot.classList.contains('intro-pending');
+const arrival = { progress: startsWithLogo ? 0 : 1, reveal: startsWithLogo ? 0 : 1 };
 let renderer, scene, camera, logo, animationFrame, greenSoftbox;
 let isVisible = true;
 const stage = document.getElementById('logo-stage');
+
+function createSurfaceTexture() {
+  const size = 128;
+  const pixels = new Uint8Array(size * size * 4);
+  let seed = 731;
+  for (let i = 0; i < size * size; i++) {
+    seed = (seed * 1664525 + 1013904223) >>> 0;
+    const grain = 204 + (seed >>> 29);
+    pixels[i*4] = pixels[i*4+1] = pixels[i*4+2] = grain;
+    pixels[i*4+3] = 255;
+  }
+  const texture = new THREE.DataTexture(pixels, size, size);
+  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(.065, .065);
+  texture.minFilter = THREE.LinearMipmapLinearFilter;
+  texture.magFilter = THREE.LinearFilter;
+  texture.generateMipmaps = true;
+  texture.needsUpdate = true;
+  return texture;
+}
+
+function revealInterface() {
+  introRoot.classList.remove('intro-pending');
+  if (window.gsap) {
+    window.gsap.fromTo('.header, .hero-top, .hero h1, .hero-bottom, .case-card', { autoAlpha: 0 }, { autoAlpha: 1, duration: .55, stagger: .045, ease: 'power2.out', onComplete: () => window.ScrollTrigger?.refresh() });
+  }
+}
 
 async function createLogo() {
   try {
@@ -27,24 +57,36 @@ async function createLogo() {
     const pmrem = new THREE.PMREMGenerator(renderer);
     const room = new RoomEnvironment();
     scene.environment = pmrem.fromScene(room, .04).texture;
-    scene.environmentIntensity = .7;
+    scene.environmentIntensity = .35;
     room.dispose();
     pmrem.dispose();
-    const key = new THREE.DirectionalLight(0xffffff, 1.8);
-    key.position.set(-4, 6, 5);
+    const key = new THREE.DirectionalLight(0xffffff, 1.1);
+    key.position.set(-4, 6, 2);
     scene.add(key);
-    const rim = new THREE.DirectionalLight(0xadbdb6, 1.4);
+    const rim = new THREE.DirectionalLight(0xb6bdb9, .8);
     rim.position.set(5, 2, -2);
     scene.add(rim);
-    const lower = new THREE.DirectionalLight(0xc9ddd4, .65);
+    const lower = new THREE.DirectionalLight(0xd4d8d5, .3);
     lower.position.set(1, -5, 3);
     scene.add(lower);
     // A physical green strip light sweeps across the black metal as you scroll.
     // The material itself keeps its original graphite color throughout.
     RectAreaLightUniformsLib.init();
-    greenSoftbox = new THREE.RectAreaLight(0x32e6a3, 16, 1.8, 6);
+    greenSoftbox = new THREE.RectAreaLight(0x32ddc9, 22, 2.2, 6);
     scene.add(greenSoftbox);
-    const material = new THREE.MeshPhysicalMaterial({ color: 0x1b211e, metalness: .96, roughness: .24, clearcoat: 1, clearcoatRoughness: .19, envMapIntensity: 1.9 });
+    const surface = createSurfaceTexture();
+    const faceMaterial = new THREE.MeshPhysicalMaterial({ color: 0x090b0a, metalness: .28, roughness: .48, roughnessMap: surface, bumpMap: surface, bumpScale: .002, clearcoat: .85, clearcoatRoughness: .22, envMapIntensity: .65 });
+    const edgeMaterial = new THREE.MeshPhysicalMaterial({ color: 0x111714, metalness: .55, roughness: .23, clearcoat: 1, clearcoatRoughness: .14, envMapIntensity: 1.2 });
+    // Keep the broad black face neutral; the bevel and side material carry
+    // the colored rim. This avoids a bright green wash over the core.
+    faceMaterial.onBeforeCompile = shader => {
+      shader.fragmentShader = shader.fragmentShader.replace('#include <opaque_fragment>', `
+        float neutralFinish = min(outgoingLight.r, min(outgoingLight.g, outgoingLight.b));
+        outgoingLight = vec3(neutralFinish) + (outgoingLight - vec3(neutralFinish)) * 0.06;
+        #include <opaque_fragment>
+      `);
+    };
+    const material = [faceMaterial, edgeMaterial];
     const response = await fetch('./assets/w1.svg');
     if (!response.ok) throw new Error('Logo indisponível');
     const svg = new SVGLoader().parse(await response.text());
@@ -68,13 +110,18 @@ async function createLogo() {
       document.body.classList.remove('webgl-ready');
     });
     renderer.domElement.addEventListener('webglcontextrestored', () => { document.body.classList.add('webgl-ready'); tick(); });
-    if (window.gsap && !motionQuery.matches && window.scrollY < window.innerHeight * .25) {
-      window.gsap.to(arrival, { progress: 1, duration: 2.2, ease: 'power3.inOut' });
+    if (window.gsap && introRoot.classList.contains('intro-pending')) {
+      const opening = window.gsap.timeline({ defaults: { ease: 'power3.inOut' } });
+      opening.to(arrival, { reveal: 1, duration: .25 }, 0)
+        .to(arrival, { progress: 1, duration: 1.35 }, .15)
+        .call(revealInterface);
     } else {
-      arrival.progress = 1;
+      arrival.progress = arrival.reveal = 1;
+      introRoot.classList.remove('intro-pending');
     }
     tick();
   } catch (error) {
+    introRoot.classList.remove('intro-pending');
     console.warn('Exibindo a versão vetorial da marca.', error.message);
     renderer?.domElement.remove();
     document.body.classList.remove('webgl-ready');
@@ -98,14 +145,15 @@ function tick() {
   const fitScale = mobile() ? Math.min(.84, camera.aspect * .9) : Math.min(.88, camera.aspect * .75);
   const enter = reduced ? 1 : arrival.progress;
   const intro = 1 - enter;
-  logo.rotation.set(-.16 + intro*.11 + state.turn*.06 + state.pointerY*.08, -.34 + intro*.24 - state.turn*.12 + state.pointerX*.12, -.11 + intro*.11 + state.turn*.035);
+  logo.rotation.set(-.16 + state.turn*.04 + state.pointerY*.08, -.34 - state.turn*.1 + state.pointerX*.12, -.11 + state.turn*.025);
   logo.position.set(mobile() ? 0 : state.x * enter, (.35 + state.y) * enter, 0);
-  logo.scale.setScalar(fitScale * state.size * (1 + intro * .45));
+  logo.scale.setScalar(fitScale * state.size * (1 + intro * .28));
   const progress = reduced ? .15 : state.light;
-  greenSoftbox.position.set(logo.position.x - 5 + progress * 11, 3.5 - progress * 5, 4.5);
+  const angle = -.85 + progress * Math.PI * 1.6;
+  greenSoftbox.position.set(logo.position.x + Math.cos(angle) * 5.4, logo.position.y + Math.sin(angle) * 3.8, -.25);
   greenSoftbox.lookAt(logo.position.x, logo.position.y, 0);
-  greenSoftbox.intensity = (10 + Math.sin(progress * Math.PI) * 14) * (.25 + .75 * enter);
-  renderer.domElement.style.opacity = String(state.alpha);
+  greenSoftbox.intensity = (18 + Math.sin(progress * Math.PI) * 12) * enter * enter;
+  renderer.domElement.style.opacity = String(state.alpha * arrival.reveal);
   renderer.render(scene, camera);
 }
 
@@ -126,7 +174,6 @@ if (gsap && ScrollTrigger) {
   media.add({ full: '(prefers-reduced-motion: no-preference)', reduced: '(prefers-reduced-motion: reduce)' }, context => {
     gsap.set(state, { light: 0, turn: 0, size: 1, x: .85, y: 0, alpha: 1 });
     if (context.conditions.full) {
-      gsap.from('.hero h1 > span', { yPercent: 20, autoAlpha: 0, duration: 1.2, delay: .65, stagger: .1, ease: 'power3.out' });
       gsap.fromTo('.hero h1', { y: 0, autoAlpha: 1 }, { y: -70, autoAlpha: 0, ease: 'none', scrollTrigger: { trigger: '.hero', start: '12% top', end: 'bottom 20%', scrub: .5 } });
       gsap.fromTo('.hero-top, .hero-bottom, .case-card', { autoAlpha: 1, y: 0 }, { autoAlpha: 0, y: -25, ease: 'none', scrollTrigger: { trigger: '.hero', start: '10% top', end: '70% top', scrub: .4 } });
       const journey = gsap.timeline({ defaults: { ease: 'none' }, scrollTrigger: { trigger: '.dark-journey', start: 'top top', end: 'bottom bottom', scrub: .8 } });

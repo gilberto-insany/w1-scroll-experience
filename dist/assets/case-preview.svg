@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="400" height="320" viewBox="0 0 400 320" fill="none">
-  <defs><radialGradient id="g"><stop stop-color="#38694e"/><stop offset="1" stop-color="#080d0a"/></radialGradient><linearGradient id="b" x1="120" y1="240" x2="255" y2="70" gradientUnits="userSpaceOnUse"><stop stop-color="#163e2a"/><stop offset=".55" stop-color="#b3d5b8"/><stop offset="1" stop-color="#34ddbd"/></linearGradient><filter id="f"><feGaussianBlur stdDeviation="7"/></filter></defs>
+  <defs><radialGradient id="g"><stop stop-color="#38694e"/><stop offset="1" stop-color="#080d0a"/></radialGradient><linearGradient id="b" x1="120" y1="240" x2="255" y2="70" gradientUnits="userSpaceOnUse"><stop stop-color="#163e2a"/><stop offset=".55" stop-color="#b3d5b8"/><stop offset="1" stop-color="#32ddc9"/></linearGradient><filter id="f"><feGaussianBlur stdDeviation="7"/></filter></defs>
   <rect width="400" height="320" fill="url(#g)"/>
   <g opacity=".2" stroke="#c2e5ce"><path d="M0 80h400M0 160h400M0 240h400M100 0v320M200 0v320M300 0v320"/></g>
-  <ellipse cx="202" cy="263" rx="85" ry="16" fill="#2ac9a2" opacity=".25" filter="url(#f)"/>
+  <ellipse cx="202" cy="263" rx="85" ry="16" fill="#32ddc9" opacity=".25" filter="url(#f)"/>
   <g transform="translate(34 10) rotate(-9 170 150)" stroke="#d3f3dd" stroke-opacity=".4">
     <path d="m103 208 32-18 32 18v50l-32 18-32-18z" fill="url(#b)"/><path d="m166 143 32-18 32 18v114l-32 18-32-18z" fill="url(#b)"/><path d="m229 78 32-18 32 18v179l-32 18-32-18z" fill="url(#b)"/>
     <path d="m103 208 32 18 32-18m-32 18v50m31-133 32 18 32-18m-32 18v114m31-197 32 18 32-18m-32 18v179"/>
