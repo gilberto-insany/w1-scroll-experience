@@ -1,6 +1,6 @@
 # W1 — Seu futuro em movimento
 
-Proposta navegável de uma experiência W1 com grid editorial, contorno 3D e fragmentação vinculada ao scroll.
+Proposta navegável com logo 3D em metal preto, iluminação verde vinculada ao scroll e direção editorial.
 
 [Abrir a proposta](https://w1-future-in-motion.insany-team-1573.chatgpt.site)
 
@@ -10,38 +10,32 @@ Proposta navegável de uma experiência W1 com grid editorial, contorno 3D e fra
 python3 -m http.server 4184 --directory dist
 ```
 
-Acesse http://localhost:4184. Não há instalação de dependências nem build. Fontes, scripts e assets são servidos localmente.
+Acesse http://localhost:4184. Não há instalação de dependências nem build. Fontes, scripts e assets são locais.
 
-## Interação da revisão 02
+## Revisão 03
 
-- Hero de uma altura de viewport com logo menor, inicialmente formado por contornos com profundidade e reação suave ao mouse.
-- No scroll, o objeto ganha corpo de metal preto, cresce discretamente e se separa em peças volumétricas independentes. A animação pode ser revertida ao subir a página.
-- Passagem direta da abertura ao manifesto, sem a antiga seção intermediária.
-- Grid de 12 colunas com linhas finas, adaptado para seis no celular. Textos de apoio têm uma área de leitura preservada.
-- Fundo granulado, iluminação verde discreta e verde nos acentos da interface.
-- Header compacto após o scroll: menu à esquerda, logo central e contato à direita.
-- Card flutuante de cases com exemplo explicitamente fictício, aberto em um diálogo acessível.
-- Marquee sem linha superior, seguido da área clara de soluções.
-- Navegação interna, acordeões, links oficiais, tratamento de movimento reduzido e fallback vetorial.
+- Hero de uma altura de viewport. Na entrada, o logo sólido original aparece maior no centro, diminui e gira suavemente até a composição final, mantendo a reação ao mouse.
+- Uma luz retangular verde muda de posição conforme o scroll. O material permanece preto; a cor aparece como reflexão da iluminação.
+- Passagem direta da abertura para o manifesto, seguida do marquee sem divisória superior.
+- Grid editorial para a diagramação, com apenas alguns traços visuais pontuais. A malha de linhas verticais foi retirada.
+- Fundo suave com verde discreto, iluminação no canto superior esquerdo e granulação fina de baixa intensidade em escala fixa de pixels.
+- Header que se condensa em uma cápsula central flutuante: menu à esquerda, logo ao centro e contato à direita.
+- Card no canto inferior direito da abertura, com um case ilustrativo em diálogo acessível.
+- Layout responsivo, navegação interna, acordeões, links oficiais, movimento reduzido e fallback vetorial.
 
-## Arquivos principais
+## Arquivos
 
-- `dist/app.js`: iluminação, mouse, animações e navegação.
-- `dist/fragments.js`: contorno com espessura e recorte geométrico das peças do SVG original.
-- `dist/layout.css`: grid, direção de arte, header e responsividade da revisão.
+- `dist/app.js`: geometria extrudada, material físico, softbox verde, mouse, scroll e navegação.
+- `dist/layout.css`: direção de arte, composição responsiva e menu flutuante.
 - `dist/style.css`: estilos base, soluções e rodapé.
 - `dist/index.html`: conteúdo e marcação.
 
-Three.js 0.180, GSAP 3.13 e ScrollTrigger são incluídos em `dist/assets/vendor`. Public Sans é distribuída com sua licença em `dist/assets/fonts`.
+Three.js 0.180, GSAP 3.13 e ScrollTrigger estão em `dist/assets/vendor`. A iluminação retangular usa a biblioteca de uniformes LTC da própria Three.js. Public Sans e Three.js são distribuídas com suas licenças.
 
-## Validar geometria
+## Verificar sintaxe
 
 ```sh
 node --check dist/app.js
-node --check dist/fragments.js
-node --no-warnings --experimental-loader ./checks/three-loader.mjs checks/geometry.mjs
 ```
 
-A verificação garante volume preservado no recorte de contornos convexos e côncavos, normais voltadas para fora e profundidade real no contorno.
-
-A proposta usa o posicionamento de w1.com.br e referências visuais de Lando Norris, Trionn, Onoera e Nudot. O case da Clínica Aurora é uma simulação autorizada para a apresentação; não é um cliente ou resultado real. A seção de soluções continua como estudo inicial.
+A proposta usa o posicionamento de w1.com.br e referências de Lando Norris, Trionn, Onoera, Nudot e Active Theory. A Clínica Aurora é um case fictício para demonstrar a interface; não representa um cliente ou resultado real. A área de soluções é um estudo inicial.
