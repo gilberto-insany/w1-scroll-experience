@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080909">
+  <meta name="description" content="W1. Planejamento financeiro para colocar o seu futuro em movimento. Explore uma nova perspectiva para suas conquistas.">
+  <title>W1 — Seu futuro em movimento</title>
+  <link rel="icon" href="./assets/w1.svg" type="image/svg+xml">
+  <link rel="preload" href="./assets/fonts/PublicSans-Latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="./style.css">
+  <script type="importmap">{"imports":{"three":"./assets/vendor/three.module.js"}}</script>
+  <script defer src="./assets/vendor/gsap.min.js"></script>
+  <script defer src="./assets/vendor/ScrollTrigger.min.js"></script>
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#solucoes">Ir para as soluções</a>
+  <header class="header">
+    <a href="#inicio" class="brand" aria-label="W1 — Início"><img src="./assets/w1.svg" alt="W1" width="72" height="36"><span>FUTURO EM<br>MOVIMENTO.</span></a>
+    <nav class="desktop-nav" aria-label="Navegação principal"><a href="#essencia">A W1 <span>01</span></a><a href="#solucoes">Soluções <span>02</span></a></nav>
+    <div class="header-actions"><a class="contact-pill" href="https://www.w1.com.br/atendimento" target="_blank" rel="noopener">Vamos conversar <span aria-hidden="true">↗</span></a><button class="menu-button" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu"><span></span><span></span></button></div>
+  </header>
+  <div id="menu" class="menu-overlay" hidden inert>
+    <span class="eyebrow">EXPLORE NOVAS POSSIBILIDADES</span>
+    <nav aria-label="Menu"><a href="#inicio"><small>00</small> Início <span>↗</span></a><a href="#essencia"><small>01</small> A essência <span>↗</span></a><a href="#solucoes"><small>02</small> Soluções <span>↗</span></a><a href="#contato"><small>03</small> Seu próximo passo <span>↗</span></a></nav>
+    <p>Uma nova perspectiva para o seu futuro.</p>
+  </div>
+  <main>
+    <div class="dark-journey" id="inicio">
+      <div class="visual-sticky" aria-hidden="true"><div class="ambient-glow"></div><div id="logo-stage"><img class="logo-fallback" src="./assets/w1.svg" alt=""></div><div class="visual-caption"><i></i><span>UMA NOVA PERSPECTIVA</span><span class="material-label">01 — POTENCIAL</span></div></div>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-top"><p>Planejamento financeiro.<br>Perspectiva humana.<br>Possibilidades sem limites.</p><span class="eyebrow hero-index">W1 / UM FUTURO POSSÍVEL</span></div>
+        <h1 id="hero-title"><span>Seu futuro.</span><span class="second-line">Em movimento<span class="title-period">.</span></span></h1>
+        <div class="hero-bottom"><a class="scroll-cue" href="#essencia"><span class="scroll-line" aria-hidden="true">↓</span><span>GRANDES CONQUISTAS<br>COMEÇAM COM UM PASSO.</span></a><a class="hero-cta" href="https://www.w1.com.br/atendimento" target="_blank" rel="noopener"><span class="arrow-orbit" aria-hidden="true">↗</span><span>O próximo capítulo<br><strong>começa com você.</strong></span></a></div>
+      </section>
+      <section class="essence" id="essencia" aria-labelledby="essence-title">
+        <div class="section-meta"><span class="eyebrow"><i></i> 01 / A ESSÊNCIA</span><span class="eyebrow">PESSOAS. PLANOS. POSSIBILIDADES.</span></div>
+        <h2 id="essence-title" class="reveal-words">O futuro não acontece.<br>A gente faz acontecer.</h2>
+        <div class="essence-note"><span class="note-cross" aria-hidden="true">+</span><p>O que move você é o que nos move.<br>Conectamos planejamento, tecnologia e pessoas para transformar objetivos em próximos passos.</p></div>
+      </section>
+      <section class="manifesto" aria-labelledby="manifesto-title">
+        <div class="section-meta"><span class="eyebrow"><i></i> POTENCIAL QUE SE TRANSFORMA</span><span class="eyebrow">02 — EM MOVIMENTO</span></div>
+        <div class="manifesto-copy"><h2 id="manifesto-title">Sua vida é única.<br>Seu planejamento<br><em>também precisa ser.</em></h2><div class="manifesto-aside"><span class="mini-line"></span><p>Somos a W1. Um ecossistema que une conhecimento financeiro, tecnologia e um olhar humano para acompanhar as suas ambições.</p><a class="text-link" href="#solucoes">Conheça nossas soluções <span>↗</span></a></div></div>
+        <div class="manifesto-bottom"><span class="eyebrow">DO PRIMEIRO PLANO AO SEU LEGADO.</span><span class="eyebrow">SEMPRE EM FRENTE. ↘</span></div>
+      </section>
+      <div class="marquee" aria-label="Planejar, conquistar, transformar, evoluir"><div class="marquee-track" aria-hidden="true"><span>PLANEJAR <b>↗</b> CONQUISTAR <b>✳</b> TRANSFORMAR <b>↗</b> EVOLUIR <b>✳</b>&nbsp;</span><span>PLANEJAR <b>↗</b> CONQUISTAR <b>✳</b> TRANSFORMAR <b>↗</b> EVOLUIR <b>✳</b>&nbsp;</span></div></div>
+    </div>
+    <section class="solutions" id="solucoes" aria-labelledby="solutions-title">
+      <div class="section-meta"><span class="eyebrow"><i></i> 02 / POSSIBILIDADES REAIS</span><span class="eyebrow">UM ECOSSISTEMA. O SEU MOMENTO.</span></div>
+      <div class="solutions-intro"><h2 id="solutions-title">Muito além<br>dos <span>números.</span></h2><p>Uma visão completa das suas finanças.<br>Um caminho que faz sentido para você.</p></div>
+      <div class="solution-list">
+        <details open><summary><span class="solution-number">01</span><h3>Planejamento financeiro</h3><span class="solution-tag">O SEU PONTO DE PARTIDA</span><span class="solution-plus">+</span></summary><div class="solution-content"><p>Clareza para decidir. Estratégia para avançar. Um planejamento financeiro 360° construído a partir da sua vida e dos seus objetivos.</p><a href="https://www.w1.com.br/w1-consultoria" target="_blank" rel="noopener">Explore a W1 Consultoria <span>↗</span></a></div></details>
+        <details><summary><span class="solution-number">02</span><h3>Investimentos</h3><span class="solution-tag">CAPITAL COM PROPÓSITO</span><span class="solution-plus">+</span></summary><div class="solution-content"><p>Assessoria de investimentos alinhada ao seu perfil e ao futuro que você deseja construir.</p><a href="https://www.w1.com.br/w1-capital" target="_blank" rel="noopener">Conheça a W1 Capital <span>↗</span></a></div></details>
+        <details><summary><span class="solution-number">03</span><h3>Patrimônio & legado</h3><span class="solution-tag">PENSE NAS PRÓXIMAS GERAÇÕES</span><span class="solution-plus">+</span></summary><div class="solution-content"><p>Planejamento sucessório e estruturação patrimonial para dar continuidade à sua história.</p><a href="https://www.w1.com.br/w1-consultoria-patrimonial" target="_blank" rel="noopener">Explore a Consultoria Patrimonial <span>↗</span></a></div></details>
+        <details><summary><span class="solution-number">04</span><h3>Seu negócio</h3><span class="solution-tag">VISÃO PARA CRESCER</span><span class="solution-plus">+</span></summary><div class="solution-content"><p>Planejamento financeiro que considera as necessidades e os próximos desafios da sua empresa.</p><a href="https://www.w1.com.br/w1-business" target="_blank" rel="noopener">Conheça a W1 Business <span>↗</span></a></div></details>
+      </div>
+    </section>
+    <footer id="contato"><div class="footer-top"><span class="eyebrow"><i></i> O SEU PRÓXIMO PASSO</span><span class="eyebrow">VAMOS CONSTRUIR JUNTOS.</span></div><a class="footer-cta" href="https://www.w1.com.br/atendimento" target="_blank" rel="noopener">O futuro<br>começa agora.<span aria-hidden="true">↗</span></a><div class="footer-bottom"><img src="./assets/w1.svg" alt="W1" width="64" height="32"><span>© 2026 W1 · Estudo de experiência digital</span><a href="#inicio">Voltar ao início ↑</a></div></footer>
+  </main>
+  <div class="page-progress" aria-hidden="true"><span></span></div>
+</body>
+</html>
