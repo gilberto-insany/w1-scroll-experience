@@ -12,7 +12,7 @@ python3 -m http.server 4184 --directory dist
 
 Acesse http://localhost:4184. O site usa HTML/JS estático. Fontes e scripts são locais. Os mapas licenciados precisam ser preparados uma vez antes de rodar a partir de um clone; sem eles, o logo mantém um material preto de fallback.
 
-## Revisão 09
+## Revisão 10
 
 - A abertura mostra primeiro apenas o logo sobre preto. Ele diminui até a posição final e, depois, textos e navegação entram suavemente, sem contador ou indicador de progresso.
 - O objeto usa o material Poliigon Metal Painted Matte 7037 fornecido pelo usuário: mapas reais de cor, normal, oclusão, metal e rugosidade. A superfície permanece preta com relevo fino; bevels e laterais recebem a luz verde.
@@ -25,7 +25,7 @@ Acesse http://localhost:4184. O site usa HTML/JS estático. Fontes e scripts sã
 - Grid editorial para a diagramação, com apoios visuais discretos e sem numerações decorativas.
 - Header que se condensa em uma barra central flutuante, com blur, sem borda e com cantos discretos: menu à esquerda, logo ao centro e CTA “conversar” à direita.
 - Card horizontal preto translúcido no canto inferior direito, alinhado ao grid, com três cases fictícios. Alternância suave, seleção manual, pausa e diálogo correspondente a cada conteúdo. A alternância pausa com foco, hover, diálogo aberto ou card fora da tela.
-- W mais responsivo ao mouse, com suavização mais rápida e cerca do dobro de amplitude no hover. Clicar e arrastar a própria geometria permite uma rotação maior; ao soltar, ele se recompõe suavemente. Os controles e o scroll de toque permanecem independentes.
+- W sem interação com o mouse e sem rotação por arraste. A direção e o movimento do objeto são controlados apenas pela abertura e pelo scroll.
 - Interface sem setas e com menos elementos decorativos.
 - Layout responsivo, navegação interna, acordeões, links oficiais, movimento reduzido e fallback vetorial. A abertura tem uma saída de segurança caso os recursos não carreguem.
 
@@ -41,7 +41,7 @@ O script verifica o SHA-256 do pacote e gera mapas 1K em `dist/assets/materials/
 
 ## Arquivos
 
-- `dist/app.js`: geometria extrudada, material físico, softbox verde, mouse, scroll e navegação.
+- `dist/app.js`: geometria extrudada, material físico, softbox verde, scroll e navegação.
 - `dist/layout.css`: direção de arte, composição responsiva e menu flutuante.
 - `dist/style.css`: estilos base, soluções e rodapé.
 - `dist/typography.css`: entrelinhas, medidas de texto e hierarquia editorial.

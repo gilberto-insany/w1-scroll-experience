@@ -5,12 +5,7 @@ import { RectAreaLightUniformsLib } from './assets/vendor/RectAreaLightUniformsL
 
 const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 const mobile = () => window.innerWidth <= 800;
-const state = { light: 0, turn: 0, size: 1, x: .85, y: 0, alpha: 1, pointerX: 0, pointerY: 0 };
-const pointer = { x: 0, y: 0 };
-const hero = document.querySelector('.hero');
-const raycaster = new THREE.Raycaster();
-const drag = { active: false, id: null, lastX: 0, lastY: 0, x: 0, y: 0, targetX: 0, targetY: 0 };
-let hoverDirty = false, pointerOverHero = false;
+const state = { light: 0, turn: 0, size: 1, x: .85, y: 0, alpha: 1 };
 let diamondSprites = [], marqueeVisible = false, marqueeAnimation;
 const marqueeTrack = document.querySelector('.marquee-track');
 const diamondFrames = 192, diamondColumns = 16, diamondRows = 12;
@@ -271,16 +266,10 @@ function tick() {
   if (!isVisible || document.hidden || !logo) return;
   const reduced = motionQuery.matches;
   updateDiamondFrames();
-  state.pointerX += ((reduced ? 0 : pointer.x) - state.pointerX) * .09;
-  state.pointerY += ((reduced ? 0 : pointer.y) - state.pointerY) * .09;
-  const dragEase = reduced ? 1 : drag.active ? .2 : .055;
-  drag.x += (drag.targetX - drag.x) * dragEase;
-  drag.y += (drag.targetY - drag.y) * dragEase;
   const fitScale = mobile() ? Math.min(1, camera.aspect * 1.06) : Math.min(1.065, camera.aspect * .907);
   const enter = reduced ? 1 : arrival.progress;
   const intro = 1 - enter;
-  const hoverWeight = drag.active ? .35 : 1;
-  logo.rotation.set(-.16 + state.turn*.04 + state.pointerY*.18*hoverWeight + drag.y, -.34 - state.turn*.1 + state.pointerX*.28*hoverWeight + drag.x, -.11 + state.turn*.025);
+  logo.rotation.set(-.16 + state.turn*.04, -.34 - state.turn*.1, -.11 + state.turn*.025);
   logo.position.set(mobile() ? 0 : state.x * enter, (.35 + state.y) * enter, 0);
   logo.scale.setScalar(fitScale * state.size * (1 + intro * .28));
   const progress = reduced ? .15 : state.light;
@@ -290,60 +279,10 @@ function tick() {
   greenSoftbox.intensity = (18 + Math.sin(progress * Math.PI) * 12) * enter * enter;
   renderer.domElement.style.opacity = String(.78 * state.alpha * arrival.reveal);
   renderer.render(scene, camera);
-  if (hoverDirty && !drag.active) {
-    hero.classList.toggle('logo-hovered', pointerOverHero && hitsLogo());
-    hoverDirty = false;
-  }
+
 }
 
 window.addEventListener('resize', resize, { passive: true });
-function hitsLogo(event) {
-  if (!logo || !renderer || arrival.progress < .99 || !document.body.classList.contains('webgl-ready')) return false;
-  const rect = stage.getBoundingClientRect();
-  const x = event ? (event.clientX - rect.left) / rect.width * 2 - 1 : pointer.x;
-  const y = event ? -(event.clientY - rect.top) / rect.height * 2 + 1 : -pointer.y;
-  raycaster.setFromCamera(new THREE.Vector2(x, y), camera);
-  return raycaster.intersectObject(logo, true).length > 0;
-}
-function endLogoDrag() {
-  if (!drag.active) return;
-  const pointerId = drag.id;
-  drag.active = false;
-  drag.id = null;
-  if (hero.hasPointerCapture(pointerId)) hero.releasePointerCapture(pointerId);
-  drag.targetX = drag.targetY = 0;
-  hero.classList.remove('is-dragging');
-  hoverDirty = true;
-}
-hero.addEventListener('pointerdown', event => {
-  if (event.button !== 0 || event.pointerType === 'touch' || event.target.closest('a,button,input,summary,dialog') || !hitsLogo(event)) return;
-  drag.active = true;
-  drag.id = event.pointerId;
-  drag.lastX = event.clientX;
-  drag.lastY = event.clientY;
-  hero.setPointerCapture(event.pointerId);
-  hero.classList.add('is-dragging');
-  event.preventDefault();
-});
-window.addEventListener('pointermove', event => {
-  pointer.x = (event.clientX / innerWidth - .5) * 2;
-  pointer.y = (event.clientY / innerHeight - .5) * 2;
-  pointerOverHero = Boolean(event.target.closest('.hero')) && !event.target.closest('a,button,input');
-  hoverDirty = true;
-  if (drag.active && event.pointerId === drag.id) {
-    drag.targetX = THREE.MathUtils.clamp(drag.targetX + (event.clientX - drag.lastX) * .0085, -1.25, 1.25);
-    drag.targetY = THREE.MathUtils.clamp(drag.targetY + (event.clientY - drag.lastY) * .006, -.7, .7);
-    drag.lastX = event.clientX;
-    drag.lastY = event.clientY;
-  }
-}, { passive: true });
-window.addEventListener('pointerup', endLogoDrag);
-window.addEventListener('pointercancel', endLogoDrag);
-hero.addEventListener('lostpointercapture', endLogoDrag);
-window.addEventListener('blur', endLogoDrag);
-window.addEventListener('pointerout', event => {
-  if (!event.relatedTarget) { pointer.x = pointer.y = 0; pointerOverHero = false; hoverDirty = true; }
-});
 new IntersectionObserver(entries => { isVisible = entries[0].isIntersecting; }, { rootMargin: '100px' }).observe(document.querySelector('.dark-journey'));
 createLogo();
 

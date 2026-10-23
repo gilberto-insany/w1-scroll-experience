@@ -182,4 +182,3 @@ html.intro-pending .case-card-shell{opacity:0!important;visibility:hidden!import
 
 /* A real 360° turn sampled from the marquee's own animation clock. */
 .diamond-sprite{background-repeat:no-repeat;background-size:1600% 1200%;background-position:0 0;transform-origin:center}
-.hero.logo-hovered{cursor:grab}.hero.is-dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
