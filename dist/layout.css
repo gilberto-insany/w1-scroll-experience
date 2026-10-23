@@ -175,3 +175,7 @@ html.intro-pending .manifesto,html.intro-pending .marquee,html.intro-pending .so
 @media(max-width:800px){.case-card-shell{right:var(--gutter);bottom:30px;width:300px;min-width:0}.case-card{grid-template-columns:86px 1fr;gap:13px;min-height:102px}.case-card-visual{width:86px;height:86px}.case-card-title{font-size:14px;min-height:32px}.hero-bottom{bottom:153px}.case-card-copy{padding-top:4px}.case-card-label{font-size:7px}.case-card-footer{font-size:7px;margin-top:10px}.marquee-icon{width:78px;height:78px;margin:0 18px}}
 @media(max-width:500px){.case-card-shell{bottom:28px;width:calc((100% - var(--gutter)*2 - var(--column-gap)*5)/6*5 + var(--column-gap)*4);max-width:320px}.case-card{grid-template-columns:80px 1fr;gap:12px;min-height:96px}.case-card-visual{width:80px;height:80px}.case-card-copy{padding-right:4px}.case-card-title{font-size:13px;min-height:30px}.case-card-label{font-size:7px;margin-bottom:6px}.case-card-footer{font-size:6px;margin-top:9px}.case-switcher{right:10px;bottom:8px}.hero-bottom{bottom:143px}.marquee-icon{width:68px;height:68px;margin:0 15px}}
 html.intro-pending .case-card-shell{opacity:0!important;visibility:hidden!important}
+/* Small green diamonds, each in a different three-dimensional pose. */
+.marquee-icon{width:clamp(40px,4.5vw,64px);height:clamp(40px,4.5vw,64px);margin:0 clamp(18px,2.6vw,42px)}
+@media(max-width:800px){.marquee-icon{width:42px;height:42px;margin:0 20px}}
+@media(max-width:500px){.marquee-icon{width:36px;height:36px;margin:0 17px}}

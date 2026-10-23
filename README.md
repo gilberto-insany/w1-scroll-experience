@@ -12,14 +12,14 @@ python3 -m http.server 4184 --directory dist
 
 Acesse http://localhost:4184. O site usa HTML/JS estático. Fontes e scripts são locais. Os mapas licenciados precisam ser preparados uma vez antes de rodar a partir de um clone; sem eles, o logo mantém um material preto de fallback.
 
-## Revisão 07
+## Revisão 08
 
 - A abertura mostra primeiro apenas o logo sobre preto. Ele diminui até a posição final e, depois, textos e navegação entram suavemente, sem contador ou indicador de progresso.
 - O objeto usa o material Poliigon Metal Painted Matte 7037 fornecido pelo usuário: mapas reais de cor, normal, oclusão, metal e rugosidade. A superfície permanece preta com relevo fino; bevels e laterais recebem a luz verde.
 - A iluminação usa a mesma cor da interface (`#32ddc9`) e percorre o perímetro no scroll. O miolo permanece predominantemente preto.
 - Fundo preto puro, sem granulação nem iluminação de fundo. O degradê escuro que cobria o logo atrás do manifesto foi removido.
 - W central ampliado em aproximadamente 12% na composição desktop, com faces mais escuras e transparência para se integrar ao fundo.
-- Marquee com separadores geométricos em volume: moldura quadrada, cruz, prisma e cubo. Faces pretas e arestas com reflexos verdes.
+- Marquee com pequenos losangos em quatro rotações diferentes: faces predominantemente verdes e laterais mais escuras. Os previews usam os mesmos mapas de normal, rugosidade, metal e oclusão do W, com o pigmento alterado para o verde da interface. São renderizados uma vez no mesmo contexto WebGL e exibidos como imagens.
 - Tipografia editorial com entrelinhas mais fechadas, parágrafos de apoio maiores e compactos, medidas controladas e alguns apoios em caixa alta.
 - Passagem direta da abertura para o manifesto, seguida do marquee sem divisória superior.
 - Grid editorial para a diagramação, com apoios visuais discretos e sem numerações decorativas.
@@ -45,7 +45,7 @@ O script verifica o SHA-256 do pacote e gera mapas 1K em `dist/assets/materials/
 - `dist/style.css`: estilos base, soluções e rodapé.
 - `dist/typography.css`: entrelinhas, medidas de texto e hierarquia editorial.
 - `dist/index.html`: conteúdo e marcação.
-- `scripts/create-marquee-icons.mjs`: gera os ícones SVG a partir de geometria 3D, com projeção e iluminação.
+- `scripts/create-marquee-icons.mjs`: gera fallbacks vetoriais dos quatro losangos; os previews PBR com o acabamento real são renderizados no carregamento pelo app.
 - `scripts/prepare-material.py`: prepara os mapas de runtime a partir do pacote licenciado, sem copiar os originais para o Git.
 - `dist/material-manifest.json`: identifica o pacote e os mapas usados nesta versão.
 

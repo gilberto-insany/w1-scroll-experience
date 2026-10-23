@@ -28,6 +28,59 @@ async function loadSurfaceMaps() {
   return { color: maps[0], normal: maps[1], orm: maps[2] };
 }
 
+function renderDiamondIcons(surface) {
+  // Bake four small previews with the same renderer and surface maps as the W.
+  // They become ordinary images; no extra WebGL context or animation loop.
+  const iconScene = new THREE.Scene();
+  iconScene.environment = scene.environment;
+  iconScene.environmentIntensity = .4;
+  const iconCamera = new THREE.OrthographicCamera(-1.5, 1.5, 1.5, -1.5, .1, 20);
+  iconCamera.position.set(0, 0, 6);
+  const key = new THREE.DirectionalLight(0xffffff, 1.6);
+  key.position.set(-3, 4, 5);
+  iconScene.add(key, new THREE.HemisphereLight(0xffffff, 0x102720, .45));
+  const rim = new THREE.DirectionalLight(0xc9fff4, 1.2);
+  rim.position.set(3, 1, -2);
+  iconScene.add(rim);
+  const shape = new THREE.Shape();
+  shape.moveTo(0, 1.05); shape.lineTo(.72, 0); shape.lineTo(0, -1.05); shape.lineTo(-.72, 0); shape.closePath();
+  const geometry = new THREE.ExtrudeGeometry(shape, { depth: .26, steps: 1, bevelEnabled: true, bevelSize: .055, bevelThickness: .055, bevelSegments: 4 });
+  geometry.translate(0, 0, -.13);
+  const uv = geometry.attributes.uv;
+  for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * 24, uv.getY(i) * 24);
+  geometry.setAttribute('uv1', uv.clone());
+  const face = new THREE.MeshPhysicalMaterial({
+    color: 0x32ddc9, specularColor: new THREE.Color(0x32ddc9),
+    normalMap: surface?.normal ?? null, normalScale: new THREE.Vector2(.65, .65),
+    aoMap: surface?.orm ?? null, aoMapIntensity: .35,
+    roughnessMap: surface?.orm ?? null, roughness: surface ? 1 : .55,
+    metalnessMap: surface?.orm ?? null, metalness: surface ? 1 : .15,
+    clearcoat: .12, clearcoatRoughness: .4, envMapIntensity: .55
+  });
+  const edge = face.clone();
+  edge.color.set(0x0f766b);
+  edge.normalScale.set(.2, .2);
+  edge.roughness = surface ? .72 : .3;
+  edge.clearcoat = .45;
+  edge.clearcoatRoughness = .2;
+  edge.envMapIntensity = .9;
+  const diamond = new THREE.Mesh(geometry, [face, edge]);
+  iconScene.add(diamond);
+  const poses = [[.25,-.4,-.22],[-.3,.5,.38],[.45,-.25,.75],[-.25,-.5,-.55]];
+  const urls = [];
+  renderer.setSize(192, 192, false);
+  for (const pose of poses) {
+    diamond.rotation.set(...pose);
+    renderer.render(iconScene, iconCamera);
+    urls.push(renderer.domElement.toDataURL('image/webp', .96));
+  }
+  document.querySelectorAll('.marquee-icon[data-diamond]').forEach(image => { image.src = urls[Number(image.dataset.diamond)]; });
+  cases[1].image = urls[1];
+  cases[2].image = urls[2];
+  geometry.dispose();
+  face.dispose(); edge.dispose();
+}
+
 function revealInterface() {
   introRoot.classList.remove('intro-pending');
   if (window.gsap) {
@@ -115,6 +168,8 @@ async function createLogo() {
       }
     }
     scene.add(logo);
+    try { renderDiamondIcons(surface); }
+    catch (error) { console.warn('Mantendo os losangos vetoriais.', error.message); }
     resize();
     document.body.classList.add('webgl-ready');
     renderer.domElement.addEventListener('webglcontextlost', event => {
@@ -269,7 +324,7 @@ const cases = [
     name: 'Família Horizonte · família fictícia', area: 'PLANEJAMENTO PATRIMONIAL',
     title: ['Um patrimônio.', 'Muitas gerações.'],
     heading: ['Cuidar do presente.', 'Planejar a continuidade.'],
-    image: './assets/marquee-frame.svg', imageAlt: 'Moldura quadrada tridimensional preta com reflexos verdes',
+    image: './assets/marquee-diamond-2.svg', imageAlt: 'Losango verde tridimensional com acabamento fosco',
     steps: [
       ['Uma história construída.', 'Uma família quer reunir sua visão de patrimônio e começar a conversar sobre continuidade.'],
       ['Objetivos compartilhados.', 'O cenário ilustrativo organiza prioridades, compromissos e perguntas para um planejamento familiar.'],
@@ -280,7 +335,7 @@ const cases = [
     name: 'Estúdio Soma · empresa fictícia', area: 'W1 BUSINESS',
     title: ['Mais clareza no caixa.', 'Espaço para criar.'],
     heading: ['Organizar as finanças.', 'Abrir possibilidades.'],
-    image: './assets/marquee-cross.svg', imageAlt: 'Forma tridimensional preta com reflexos verdes',
+    image: './assets/marquee-diamond-3.svg', imageAlt: 'Losango verde tridimensional com acabamento fosco',
     steps: [
       ['Novos projetos chegando.', 'Um estúdio criativo precisa conciliar prazos de recebimento e despesas recorrentes.'],
       ['Visibilidade para escolher.', 'O cenário ilustrativo reúne calendário financeiro, prioridades e uma reserva planejada.'],
