@@ -15,24 +15,17 @@ let renderer, scene, camera, logo, animationFrame, greenSoftbox;
 let isVisible = true;
 const stage = document.getElementById('logo-stage');
 
-function createSurfaceTexture() {
-  const size = 128;
-  const pixels = new Uint8Array(size * size * 4);
-  let seed = 731;
-  for (let i = 0; i < size * size; i++) {
-    seed = (seed * 1664525 + 1013904223) >>> 0;
-    const grain = 204 + (seed >>> 29);
-    pixels[i*4] = pixels[i*4+1] = pixels[i*4+2] = grain;
-    pixels[i*4+3] = 255;
+async function loadSurfaceMaps() {
+  const loader = new THREE.TextureLoader();
+  const maps = await Promise.all(['color', 'normal', 'orm'].map(name => loader.loadAsync(`./assets/materials/matte-7037/${name}.webp`)));
+  for (const map of maps) {
+    map.wrapS = map.wrapT = THREE.RepeatWrapping;
+    // ExtrudeGeometry UVs retain the SVG's original 72 × 36 coordinate space.
+    map.repeat.set(1 / 48, 1 / 48);
+    map.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
   }
-  const texture = new THREE.DataTexture(pixels, size, size);
-  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-  texture.repeat.set(.065, .065);
-  texture.minFilter = THREE.LinearMipmapLinearFilter;
-  texture.magFilter = THREE.LinearFilter;
-  texture.generateMipmaps = true;
-  texture.needsUpdate = true;
-  return texture;
+  maps[0].colorSpace = THREE.SRGBColorSpace;
+  return { color: maps[0], normal: maps[1], orm: maps[2] };
 }
 
 function revealInterface() {
@@ -74,9 +67,28 @@ async function createLogo() {
     RectAreaLightUniformsLib.init();
     greenSoftbox = new THREE.RectAreaLight(0x32ddc9, 22, 2.2, 6);
     scene.add(greenSoftbox);
-    const surface = createSurfaceTexture();
-    const faceMaterial = new THREE.MeshPhysicalMaterial({ color: 0x050706, metalness: .28, roughness: .48, roughnessMap: surface, bumpMap: surface, bumpScale: .002, clearcoat: .85, clearcoatRoughness: .22, envMapIntensity: .5 });
-    const edgeMaterial = new THREE.MeshPhysicalMaterial({ color: 0x0a100d, metalness: .55, roughness: .23, clearcoat: 1, clearcoatRoughness: .14, envMapIntensity: .9 });
+    // The supplied 7037 painted-metal maps replace the procedural grain.
+    // Keep the geometry interactive even if a texture request fails.
+    let surface;
+    try { surface = await loadSurfaceMaps(); }
+    catch (error) { console.warn('Material indisponível; mantendo o acabamento preto.', error.message); }
+    const faceMaterial = new THREE.MeshPhysicalMaterial({
+      color: surface ? 0x686868 : 0x050706,
+      map: surface?.color ?? null,
+      normalMap: surface?.normal ?? null,
+      normalScale: new THREE.Vector2(.65, .65),
+      aoMap: surface?.orm ?? null, aoMapIntensity: .35,
+      metalnessMap: surface?.orm ?? null, metalness: surface ? 1 : .15,
+      roughnessMap: surface?.orm ?? null, roughness: surface ? 1 : .55,
+      clearcoat: .12, clearcoatRoughness: .4, envMapIntensity: .55
+    });
+    const edgeMaterial = faceMaterial.clone();
+    edgeMaterial.color.set(surface ? 0x8c8c8c : 0x0a100d);
+    edgeMaterial.normalScale.set(.2, .2);
+    edgeMaterial.roughness = surface ? .72 : .3;
+    edgeMaterial.clearcoat = .45;
+    edgeMaterial.clearcoatRoughness = .2;
+    edgeMaterial.envMapIntensity = .9;
     // Keep the broad black face neutral; the bevel and side material carry
     // the colored rim. This avoids a bright green wash over the core.
     faceMaterial.onBeforeCompile = shader => {
@@ -95,6 +107,7 @@ async function createLogo() {
       if (path.userData?.node?.nodeName !== 'path') continue;
       for (const shape of SVGLoader.createShapes(path)) {
         const geometry = new THREE.ExtrudeGeometry(shape, { depth: 6, steps: 1, bevelEnabled: true, bevelThickness: .48, bevelSize: .42, bevelSegments: 5, curveSegments: 24 });
+        geometry.setAttribute('uv1', geometry.attributes.uv.clone());
         geometry.translate(-36, -18, -3);
         const mesh = new THREE.Mesh(geometry, material);
         mesh.scale.set(.1, -.1, .1);

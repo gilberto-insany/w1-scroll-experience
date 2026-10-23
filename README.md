@@ -1,6 +1,6 @@
 # W1 — Seu futuro em movimento
 
-Proposta navegável com logo 3D em plástico metalizado preto, iluminação verde vinculada ao scroll e direção editorial.
+Proposta navegável com logo 3D em metal pintado preto fosco, iluminação verde vinculada ao scroll e direção editorial.
 
 [Abrir a proposta](https://w1-future-in-motion.insany-team-1573.chatgpt.site)
 
@@ -10,12 +10,12 @@ Proposta navegável com logo 3D em plástico metalizado preto, iluminação verd
 python3 -m http.server 4184 --directory dist
 ```
 
-Acesse http://localhost:4184. Não há instalação de dependências nem build. Fontes, scripts e assets são locais.
+Acesse http://localhost:4184. O site usa HTML/JS estático. Fontes e scripts são locais. Os mapas licenciados precisam ser preparados uma vez antes de rodar a partir de um clone; sem eles, o logo mantém um material preto de fallback.
 
-## Revisão 06
+## Revisão 07
 
 - A abertura mostra primeiro apenas o logo sobre preto. Ele diminui até a posição final e, depois, textos e navegação entram suavemente, sem contador ou indicador de progresso.
-- O objeto tem faces pretas com microtextura discreta e acabamento de plástico metalizado; os bevels e as laterais recebem o destaque da luz.
+- O objeto usa o material Poliigon Metal Painted Matte 7037 fornecido pelo usuário: mapas reais de cor, normal, oclusão, metal e rugosidade. A superfície permanece preta com relevo fino; bevels e laterais recebem a luz verde.
 - A iluminação usa a mesma cor da interface (`#32ddc9`) e percorre o perímetro no scroll. O miolo permanece predominantemente preto.
 - Fundo preto puro, sem granulação nem iluminação de fundo. O degradê escuro que cobria o logo atrás do manifesto foi removido.
 - W central ampliado em aproximadamente 12% na composição desktop, com faces mais escuras e transparência para se integrar ao fundo.
@@ -28,6 +28,16 @@ Acesse http://localhost:4184. Não há instalação de dependências nem build. 
 - Interface sem setas e com menos elementos decorativos.
 - Layout responsivo, navegação interna, acordeões, links oficiais, movimento reduzido e fallback vetorial. A abertura tem uma saída de segurança caso os recursos não carreguem.
 
+## Preparar o material
+
+O ZIP Poliigon 7037 fornecido para este projeto permanece fora do repositório. Para preparar os três mapas de runtime em WebP, use Python com Pillow:
+
+```sh
+python3 scripts/prepare-material.py /caminho/para/material.zip
+```
+
+O script verifica o SHA-256 do pacote e gera mapas 1K em `dist/assets/materials/matte-7037/`. Os mapas são ignorados pelo Git e incluídos no pacote publicado do site. `dist/material-manifest.json` registra a origem e os hashes dos arquivos gerados. Cor usa sRGB; normal e os canais AO/roughness/metalness permanecem lineares. O mapa normal recebe intensidade reduzida, sem deformar a geometria.
+
 ## Arquivos
 
 - `dist/app.js`: geometria extrudada, material físico, softbox verde, mouse, scroll e navegação.
@@ -36,6 +46,8 @@ Acesse http://localhost:4184. Não há instalação de dependências nem build. 
 - `dist/typography.css`: entrelinhas, medidas de texto e hierarquia editorial.
 - `dist/index.html`: conteúdo e marcação.
 - `scripts/create-marquee-icons.mjs`: gera os ícones SVG a partir de geometria 3D, com projeção e iluminação.
+- `scripts/prepare-material.py`: prepara os mapas de runtime a partir do pacote licenciado, sem copiar os originais para o Git.
+- `dist/material-manifest.json`: identifica o pacote e os mapas usados nesta versão.
 
 Three.js 0.180, GSAP 3.13 e ScrollTrigger estão em `dist/assets/vendor`. A iluminação retangular usa a biblioteca de uniformes LTC da própria Three.js. Public Sans e Three.js são distribuídas com suas licenças.
 

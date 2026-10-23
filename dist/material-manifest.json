@@ -1,0 +1,19 @@
+{
+  "material": "Poliigon Metal Painted Matte 7037",
+  "source_sha256": "7f551f9cbe11837fa72b59be65b55cc3f7a4bbe7bfe7aac199fe6ebbd99e0215",
+  "resolution": 1024,
+  "files": {
+    "color.webp": {
+      "sha256": "9b54ebaad5826a4c052b377b134118a91d71c56e90b596d2ed8d58f68e2bddff",
+      "bytes": 36588
+    },
+    "normal.webp": {
+      "sha256": "1afb3178123f5bcdadd23f8b55f33ab4bbf1a7c0c069e21f96586c6ef80b6228",
+      "bytes": 1257836
+    },
+    "orm.webp": {
+      "sha256": "1d7c5641dad4cc5f278fb1fe4820a66b0ce4fe89f8e7025749e06b72f98cb7b1",
+      "bytes": 355588
+    }
+  }
+}
