@@ -12,19 +12,20 @@ python3 -m http.server 4184 --directory dist
 
 Acesse http://localhost:4184. O site usa HTML/JS estático. Fontes e scripts são locais. Os mapas licenciados precisam ser preparados uma vez antes de rodar a partir de um clone; sem eles, o logo mantém um material preto de fallback.
 
-## Revisão 08
+## Revisão 09
 
 - A abertura mostra primeiro apenas o logo sobre preto. Ele diminui até a posição final e, depois, textos e navegação entram suavemente, sem contador ou indicador de progresso.
 - O objeto usa o material Poliigon Metal Painted Matte 7037 fornecido pelo usuário: mapas reais de cor, normal, oclusão, metal e rugosidade. A superfície permanece preta com relevo fino; bevels e laterais recebem a luz verde.
 - A iluminação usa a mesma cor da interface (`#32ddc9`) e percorre o perímetro no scroll. O miolo permanece predominantemente preto.
 - Fundo preto puro, sem granulação nem iluminação de fundo. O degradê escuro que cobria o logo atrás do manifesto foi removido.
 - W central ampliado em aproximadamente 12% na composição desktop, com faces mais escuras e transparência para se integrar ao fundo.
-- Marquee com pequenos losangos em quatro rotações diferentes: faces predominantemente verdes e laterais mais escuras. Os previews usam os mesmos mapas de normal, rugosidade, metal e oclusão do W, com o pigmento alterado para o verde da interface. São renderizados uma vez no mesmo contexto WebGL e exibidos como imagens.
+- Marquee com pequenos losangos em quatro rotações diferentes: faces predominantemente verdes e laterais mais escuras. Os previews usam os mesmos mapas de normal, rugosidade, metal e oclusão do W, com o pigmento alterado para o verde da interface. Um atlas de 192 vistas 3D é renderizado no mesmo contexto WebGL. A rotação acompanha o relógio do marquee, com oito voltas por passagem e fases diferentes entre as peças. O movimento respeita a preferência por movimento reduzido e só atualiza os ícones próximos à área visível.
 - Tipografia editorial com entrelinhas mais fechadas, parágrafos de apoio maiores e compactos, medidas controladas e alguns apoios em caixa alta.
 - Passagem direta da abertura para o manifesto, seguida do marquee sem divisória superior.
 - Grid editorial para a diagramação, com apoios visuais discretos e sem numerações decorativas.
 - Header que se condensa em uma barra central flutuante, com blur, sem borda e com cantos discretos: menu à esquerda, logo ao centro e CTA “conversar” à direita.
 - Card horizontal preto translúcido no canto inferior direito, alinhado ao grid, com três cases fictícios. Alternância suave, seleção manual, pausa e diálogo correspondente a cada conteúdo. A alternância pausa com foco, hover, diálogo aberto ou card fora da tela.
+- W mais responsivo ao mouse, com suavização mais rápida e cerca do dobro de amplitude no hover. Clicar e arrastar a própria geometria permite uma rotação maior; ao soltar, ele se recompõe suavemente. Os controles e o scroll de toque permanecem independentes.
 - Interface sem setas e com menos elementos decorativos.
 - Layout responsivo, navegação interna, acordeões, links oficiais, movimento reduzido e fallback vetorial. A abertura tem uma saída de segurança caso os recursos não carreguem.
 

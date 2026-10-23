@@ -179,3 +179,7 @@ html.intro-pending .case-card-shell{opacity:0!important;visibility:hidden!import
 .marquee-icon{width:clamp(40px,4.5vw,64px);height:clamp(40px,4.5vw,64px);margin:0 clamp(18px,2.6vw,42px)}
 @media(max-width:800px){.marquee-icon{width:42px;height:42px;margin:0 20px}}
 @media(max-width:500px){.marquee-icon{width:36px;height:36px;margin:0 17px}}
+
+/* A real 360° turn sampled from the marquee's own animation clock. */
+.diamond-sprite{background-repeat:no-repeat;background-size:1600% 1200%;background-position:0 0;transform-origin:center}
+.hero.logo-hovered{cursor:grab}.hero.is-dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
