@@ -1,0 +1,36 @@
+<!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Capa de compartilhamento W1</title>
+<style>@font-face{font-family:'W1 Sans';src:url('./assets/fonts/PublicSans-Latin.woff2');font-weight:100 900}body{margin:0;background:#171717;display:grid;place-items:center;min-height:100vh;font-family:'W1 Sans',sans-serif;color:#f0f0e9}img{width:min(100%,1200px);height:auto;display:block}p{font-size:12px}</style>
+<script type="importmap">{"imports":{"three":"./assets/vendor/three.module.js"}}</script>
+<p id="status">Preparando a imagem de compartilhamento…</p><img id="preview" alt="Imagem de compartilhamento W1" hidden>
+<script type="module">
+import * as THREE from 'three';
+import {SVGLoader} from './assets/vendor/SVGLoader.js';
+import {RoomEnvironment} from './assets/vendor/RoomEnvironment.js';
+import {RectAreaLightUniformsLib} from './assets/vendor/RectAreaLightUniformsLib.js';
+const width=1200,height=630;
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
+renderer.setSize(width,height);renderer.setPixelRatio(1);renderer.setClearColor(0,0);
+renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.95;
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(34,width/height,.1,100);camera.position.set(0,0,14);
+const pmrem=new THREE.PMREMGenerator(renderer),room=new RoomEnvironment();
+scene.environment=pmrem.fromScene(room,.04).texture;scene.environmentIntensity=.28;room.dispose();pmrem.dispose();
+for(const [color,intensity,position] of [[0xffffff,.85,[-4,6,2]],[0xb6bdb9,.6,[5,2,-2]],[0xd4d8d5,.3,[1,-5,3]]]){const light=new THREE.DirectionalLight(color,intensity);light.position.set(...position);scene.add(light);}
+RectAreaLightUniformsLib.init();const strip=new THREE.RectAreaLight(0x32ddc9,22,2.2,6);strip.position.set(5.25,-2.5,-.25);strip.lookAt(1.7,.3,0);scene.add(strip);
+const loader=new THREE.TextureLoader();
+const [color,normal,orm]=await Promise.all(['color','normal','orm'].map(name=>loader.loadAsync(`./assets/materials/matte-7037/${name}.webp`)));
+for(const map of [color,normal,orm]){map.wrapS=map.wrapT=THREE.RepeatWrapping;map.repeat.set(1/48,1/48);map.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());}color.colorSpace=THREE.SRGBColorSpace;
+const face=new THREE.MeshPhysicalMaterial({color:0x686868,map:color,normalMap:normal,normalScale:new THREE.Vector2(.65,.65),aoMap:orm,aoMapIntensity:.35,metalnessMap:orm,metalness:1,roughnessMap:orm,roughness:1,clearcoat:.12,clearcoatRoughness:.4,envMapIntensity:.55});
+const edge=face.clone();edge.color.set(0x8c8c8c);edge.normalScale.set(.2,.2);edge.roughness=.72;edge.clearcoat=.45;edge.clearcoatRoughness=.2;edge.envMapIntensity=.9;
+face.onBeforeCompile=shader=>{shader.fragmentShader=shader.fragmentShader.replace('#include <opaque_fragment>',`float neutralFinish=min(outgoingLight.r,min(outgoingLight.g,outgoingLight.b));outgoingLight=vec3(neutralFinish)+(outgoingLight-vec3(neutralFinish))*.06;\n#include <opaque_fragment>`);};
+const svgSource=await(await fetch('./assets/w1.svg')).text();const svg=new SVGLoader().parse(svgSource),logo=new THREE.Group();
+for(const path of svg.paths){if(path.userData?.node?.nodeName!=='path')continue;for(const shape of SVGLoader.createShapes(path)){const geometry=new THREE.ExtrudeGeometry(shape,{depth:6,steps:1,bevelEnabled:true,bevelThickness:.48,bevelSize:.42,bevelSegments:5,curveSegments:24});geometry.setAttribute('uv1',geometry.attributes.uv.clone());geometry.translate(-36,-18,-3);const mesh=new THREE.Mesh(geometry,[face,edge]);mesh.scale.set(.1,-.1,.1);logo.add(mesh);}}
+logo.rotation.set(-.16,-.34,-.11);logo.position.set(1.7,.3,0);logo.scale.setScalar(1.25);scene.add(logo);
+await document.fonts.load('500 96px "W1 Sans"');await document.fonts.load('400 16px "W1 Sans"');
+const canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;const ctx=canvas.getContext('2d');
+ctx.fillStyle='#000';ctx.fillRect(0,0,width,height);renderer.render(scene,camera);ctx.globalAlpha=.87;ctx.drawImage(renderer.domElement,0,0);ctx.globalAlpha=1;
+const mark=new Image();mark.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svgSource.replaceAll('fill="white"','fill="#32ddc9"'));await mark.decode();ctx.drawImage(mark,64,58,80,40);
+ctx.fillStyle='#f0f0e9';ctx.font='500 96px "W1 Sans"';ctx.letterSpacing='-6px';ctx.fillText('Seu futuro.',60,310);ctx.fillText('Em movimento',60,409);const periodX=60+ctx.measureText('Em movimento').width;ctx.fillStyle='#32ddc9';ctx.fillText('.',periodX,409);
+ctx.letterSpacing='.3px';ctx.font='400 15px "W1 Sans"';ctx.fillStyle='#b9c4bd';ctx.fillText('PLANEJAMENTO FINANCEIRO.',64,526);ctx.fillText('PERSPECTIVA HUMANA.',64,546);ctx.fillText('POSSIBILIDADES SEM LIMITES.',64,566);
+const preview=document.querySelector('#preview');preview.src=canvas.toDataURL('image/png');preview.hidden=false;document.querySelector('#status').remove();renderer.dispose();
+</script></html>

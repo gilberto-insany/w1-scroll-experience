@@ -12,8 +12,9 @@ python3 -m http.server 4184 --directory dist
 
 Acesse http://localhost:4184. O site usa HTML/JS estático. Fontes e scripts são locais. Os mapas licenciados precisam ser preparados uma vez antes de rodar a partir de um clone; sem eles, o logo mantém um material preto de fallback.
 
-## Revisão 10
+## Revisão 11
 
+- Favicon verde sobre preto, com versões SVG, PNG, ICO e ícone de toque para Apple. Capa de compartilhamento em PNG 1200 × 630 com o W 3D e tipografia da página; metadados Open Graph e Twitter Card usam URLs absolutas.
 - A abertura mostra primeiro apenas o logo sobre preto. Ele diminui até a posição final e, depois, textos e navegação entram suavemente, sem contador ou indicador de progresso.
 - O objeto usa o material Poliigon Metal Painted Matte 7037 fornecido pelo usuário: mapas reais de cor, normal, oclusão, metal e rugosidade. A superfície permanece preta com relevo fino; bevels e laterais recebem a luz verde.
 - A iluminação usa a mesma cor da interface (`#32ddc9`) e percorre o perímetro no scroll. O miolo permanece predominantemente preto.
@@ -49,6 +50,9 @@ O script verifica o SHA-256 do pacote e gera mapas 1K em `dist/assets/materials/
 - `scripts/create-marquee-icons.mjs`: gera fallbacks vetoriais dos quatro losangos; os previews PBR com o acabamento real são renderizados no carregamento pelo app.
 - `scripts/prepare-material.py`: prepara os mapas de runtime a partir do pacote licenciado, sem copiar os originais para o Git.
 - `dist/material-manifest.json`: identifica o pacote e os mapas usados nesta versão.
+- `dist/assets/w1-share.png`: capa de compartilhamento 1200 × 630.
+- `dist/assets/favicon.svg`, `favicon-32.png`, `apple-touch-icon.png` e `dist/favicon.ico`: ícones da página.
+- `scripts/create-share-preview.html`: gerador local da capa; servir uma cópia temporária na raiz de `dist`, salvar o PNG exibido e remover a cópia após a geração.
 
 Three.js 0.180, GSAP 3.13 e ScrollTrigger estão em `dist/assets/vendor`. A iluminação retangular usa a biblioteca de uniformes LTC da própria Three.js. Public Sans e Three.js são distribuídas com suas licenças.
 
